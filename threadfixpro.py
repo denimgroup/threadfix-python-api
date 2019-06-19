@@ -3,7 +3,7 @@
 
 __author__ = "Brandon Spruth (brandon.spruth2@target.com), Jim Nelson (jim.nelson2@target.com),"
 __copyright__ = "(C) 2018 Target Brands, Inc."
-__contributors__ = ["Brandon Spruth", "Jim Nelson"]
+__contributors__ = ["Brandon Spruth", "Jim Nelson", "Evan Schlesinger"]
 __status__ = "Production"
 __license__ = "MIT"
 
@@ -60,11 +60,11 @@ class ThreadFixProAPI(object):
 
     def list_teams(self):
         """Retrieves all the teams."""
-        return self._request('GET', 'rest/latest/teams')
+        return self._request('GET', 'rest/teams')
 
     def get_team_by_id(self, team_id):
         """Retrieves team with id of team_id"""
-        return self._request('GET', 'rest/latest/teams/{}'.format(team_id))
+        return self._request('GET', 'rest/teams/{}'.format(team_id))
 
     # Application
 
@@ -78,14 +78,14 @@ class ThreadFixProAPI(object):
         params = {'name': name}
         if url:
             params['url'] = url
-        return self._request('POST', 'rest/latest/teams/' + str(team_id) + '/applications/new', params)
+        return self._request('POST', 'rest/teams/' + str(team_id) + '/applications/new', params)
 
-    def get_application(self, application_id):
+    def get_application_by_id(self, application_id):
         """
         Retrieves an application using the given application id.
         :param application_id: Application identifier.
         """
-        return self._request('GET', 'rest/latest/applications/' + str(application_id))
+        return self._request('GET', 'rest/applications/' + str(application_id))
 
     def get_application_by_name(self, team_name, application_name):
         """
@@ -94,8 +94,223 @@ class ThreadFixProAPI(object):
         :param application_name: The name of the application to be retrieved.
         """
         return self._request('GET',
-                             'rest/latest/applications/' + str(team_name) + '/lookup?name=' + str(application_name))
+                             'rest/applications/' + str(team_name) + '/lookup?name=' + str(application_name))
 
+    def get_application_in_team_by_unique_id(self, team_name, unique_id):
+        """
+        Retrieves an application using the given team name and the applications unique id
+        :param team_name: The name of the team of the application to be retrieved.
+        :param unique_id: The unique id of the application to be retrieved.
+        """
+        return self._request('GET',
+                             'rest/applications/' + str(team_name) + '/lookup?uniqueId=' + str(unique_id))
+
+    def get_application_from_any_team_by_unique_id(self, unique_id):
+        """
+        Retrieves an application using the applications unique id ignoring team name
+        :param unique_id: The unique id of the application to be retrieved.
+        """
+        return self._request('GET',
+                             'rest/applications/allTeamLookup?uniqueId=' + str(unique_id))
+
+    def update_application(self, name=None, url=None, unique_id=None, application_criticality=None, framework_type=None, repository_url=None, repository_type=None, repository_branch=None,
+                         repository_user_name=None, repository_password=None, repository_folder=None, filter_set=None, team=None, skip_application_merge=None, application_id):
+        """
+        Updates the information of an application. Needs atleast one parameter to work
+        :param name: New name for application
+        :param unique_id: New unique id for application
+        :param application_criticality: New application criticality for application
+        :param framework_type: New framework type for application
+        :param repository_url: New repository for application
+        :param repository_type: New type of repository, git or SVN, for application
+        :param repository _branch: New branch of repository for application
+        :param repository_user_name: New username for accessing the repository of the application
+        :param repository_password: New password for accessing the repository of the application
+        :param repository_folder: New folder for the repository
+        :param filter_set: New filter set for application
+        :param team: New team for application
+        :param skip_application_merge: Whether or not to merge the application
+        :param application_id: Application identifier
+        """
+        params = {}
+        if name:
+            params['name'] = name
+        if url:
+            params['url'] = url
+        if unique_id:
+            params['uniqueId'] = unique_id
+        if application_criticality:
+            params['applicationCriticality'] = application_criticality
+        if framework_type:
+            params['frameworkType'] = framework_type
+        if repository_url:
+            params['repositoryUrl'] = repository_url
+        if repository_type:
+            params['repositoryType'] = repository_type
+        if repository_branch:
+            params['repositoryBranch'] = repository_branch
+        if repository_user_name:
+            params['repositoryUserName'] = repository_user_name
+        if repository_password:
+            params['repositoryPassword'] = repository_password
+        if repository_folder:
+            params['repositoryFolder'] = repository_folder
+        if filter_set:
+            params['filterSet'] = filter_set
+        if team:
+            params['team'] = team
+        if skip_application_merge:
+            params['skipApplicationMerge'] = skip_application_merge
+        return self._request('PUT', 'rest/applications/' + str(application_id) + '/update', params)
+
+    def set_application_parameters(self, framework_type, repository_url, application_id):
+        """
+        Sets application parameters
+        :param framework_type: Sets the webframework the app is built on
+        :param repository_url: The location of the repository where the app code can be found
+        :param application_id: Application identifier
+        """
+        params = {'frameworkType' : framework_type, 'repositoryUrl' : repository_url}
+        return self._request('POST', 'rest/applications/' + str(application_id) + '/setParameters', params)
+
+    def set_application_WAF(self, waf_id, application_id):
+        """
+        Sets the WAF id for the application
+        :param waf_id: the WAF id for the application
+        :param application_id: Application identifier
+        """
+        params = {'wafId' : waf_id}
+        return self._request('POST', 'rest/applications/' + str(application_id) + '/setWaf', params)
+
+    def set_application_URL(self, url, application_id):
+        """
+        Sets the application URL
+        :param url: The url for the application
+        :param application_id: Application identifier
+        """
+        params = {'url' : url}
+        return self._request('POST', 'rest/applications/' + str(application_id) + '/addUrl', params)
+    
+    def add_manual_finding(self, is_static=False, vuln_type, long_description, severity, native_id=None, parameter=None, file_path=None, column=None,
+                            line_text=None, line_number=None, full_url=None, path=None, application_id):
+        """
+        Adds manual finding to application
+        :param is_static: Is the finding from a static or dynamic test
+        :param vuln_type: Name of the vulnerability
+        :param long_description: General description of the issue
+        :param severity: Severity level of vulnerability from 1-5
+        :param native_id: Identifier for the vulnerability
+        :param parameter: Requested parameters for vulnerability
+        :param file_path: (Static only) Location of source file
+        :param column: (Static only) Column number for finding vulnerability source
+        :param line_text: (Static only) Line text for finding vulnerability source
+        :param line_number: (Static only) Line number for finding vulnerability source
+        :param full_url: (Dynamic only) Absolute URL to page with vulnerability
+        :param path: (Dynamic only) Relative path to the page with the vulnerability
+        :param application_id: Application identifier
+        """
+        params = {'vulnType' : vuln_type, 'long_description' : long_description, 'severity' : severity}
+        if native_id:
+            params['nativeId'] = native_id
+        if parameter:
+            params['parameter'] = parameter
+        if file_path:
+            params['filePath'] = file_path
+        if column:
+            params['column'] = column
+        if line_text:
+            params['lineText'] = line_text
+        if line_number:
+            params['lineNumber'] = line_number
+        if full_url:
+            params['fullUrl'] = full_url
+        if path:
+            params['path'] = path
+        return self._request('POST', 'rest/applications/' + str(application_id) + 'addFinding', params)
+
+    def create_application_version(self, version_name, version_date, application_id):
+        """
+        Creates an application version
+        :param version_name: Name of the version of the application
+        :param version_date: Date of the version of the application
+        :param application_id: Application identifier
+        """
+        params = {'versionName' : version_name, 'versionDate' : version_date}
+        return self._request('POST', 'rest/applications/' + str(application_id) + '/version', params)
+
+    def update_application_version(self, version_name=None, version_date=None, application_id, version_id):
+        """
+        Updates the version data for an application
+        :param version_name: New name for version
+        :param version_date: New date for version
+        :param application_id: Application identifier
+        :param version_id: Version identifier
+        """
+        params = {}
+        if version_name:
+            params['versionName'] = version_name
+        if version_date:
+            params['versionDate'] = version_date
+        return self._request('PUT', 'rest/applications/' + str(application_id) + '/version/' + str(version_id))
+    
+    def delete_application_version(self, application_id, version_id):
+        """
+        Deletes the version data for an application
+        :param application_id: Application identifier
+        :param version_id: Version identifier
+        """
+        return self._request('DELETE', 'rest/applications/' + str(application_id) + '/version/' + str(version_id))
+
+    def attach_file_to_application(self, file_name=None, file_path, application_id):
+        """
+        Uploads and attaches a file. to an application
+        :param file_name: A name to override the file name when uploaded
+        :param file_path: Path to the file to be uploaded.
+        :param application_id: Application identifier.
+        """
+        params={}
+        if file_name:
+            params['filename'] = file_name
+        files={'file': open(file_path, 'rb')}
+        return self._request('POST', 'rest/applications/' + str(application_id) + '/attachFile', params, files)
+
+    def delete_applications(self, application_id):
+        """
+        Deletes an application
+        :param application_id: Application identifier
+        """
+        return self._request('DELETE', 'rest/applications/' + str(application_id) + '/delete')
+
+    def create_application_metadata(self, key, title, description, application_id):
+        """
+        Creates metadata for an application
+        :param key: The id of an active Application Metadata Key
+        :param title: The name of an active Application Metadata Key
+        :param description: The value for the Metadata
+        :param application_id: Application identifier
+        """
+        params = {'key' : key, 'title' : title, 'description' : description}
+        return self._request('POST', 'rest/applications/' + str(application_id) + '/metadata/new', params)
+
+    def edit_application_metada(self, description, application_id, app_metadata_id):
+        """
+        Edits an application's metadata
+        :param description: New value for Metadata
+        :param application_id: Application identifier
+        :param app_metadata_id: Metadata identifier
+        """
+        params = {'description' : description}
+        return self._request('POST', 'rest/applications/' + str(application_id) + '/metadata/' + str(app_metadata_id) + '/update')
+
+    def delete_application_metadata(self, application_id, app_metadata_id):
+        """
+        Deletes an application's metadata
+        :param application_id: Application identifier
+        :param app_metadata_id: Metadata identifier
+        """
+        return self._request('DELETE', 'rest/applications/' + str(application_id) + '/metadata/' + str(app_metadata_id) + '/delete')
+
+    #Note not implicitly in API
     def get_applications_by_team(self, team_id):
         """
         Retrieves all application using the given team id.
@@ -120,7 +335,7 @@ class ThreadFixProAPI(object):
         :param file_path: Path to the scan file to be uploaded.
         """
         return self._request(
-            'POST', 'rest/latest/applications/' + str(application_id) + '/upload',
+            'POST', 'rest/applications/' + str(application_id) + '/upload',
             files={'file': open(file_path, 'rb')}
         )
 
@@ -129,17 +344,22 @@ class ThreadFixProAPI(object):
         List all scans for a given application
         :param application_id: Application identifier.
         """
-        return self._request('GET', 'rest/latest/applications/' + str(application_id) + '/scans')
+        return self._request('GET', 'rest/applications/' + str(application_id) + '/scans')
 
     def get_scan_details(self, scan_id):
         """
         List all scans for a given application
         :param scan_id: Scan identifier.
         """
-        return self._request('GET', 'rest/latest/scans/' + str(scan_id))
+        return self._request('GET', 'rest/scans/' + str(scan_id))
 
     def download_scan(self, scan_id, filename):
-        return self._request('GET', 'rest/latest/scans/' + str(scan_id) + '/download',
+        """
+        Download a scan by id
+        :param scan_id: Scan identifier
+        :param filename: Download location
+        """
+        return self._request('GET', 'rest/scans/' + str(scan_id) + '/download',
                              params={'scanFileName': filename})
 
     # Tasks
@@ -158,7 +378,7 @@ class ThreadFixProAPI(object):
             params['targetURL'] = target_url
         if scan_config_id:
             params['scanConfigId'] = scan_config_id
-        return self._request('POST', 'rest/latest/tasks/queueScan', params)
+        return self._request('POST', 'rest/tasks/queueScan', params)
 
     # Utility
 
