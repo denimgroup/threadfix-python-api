@@ -501,6 +501,67 @@ class ThreadFixProAPI(object):
         """
         return self._request('DELETE', 'rest/applications/' + str(application_id) + '/appTrackers/' + str(tracker_id) + '/delete')
 
+    # Policies
+
+    def get_policy(self, policy_id):
+        """
+        Get details for a policy
+        :param policy_id: Policy identifier
+        """
+        return self._request('GET', 'rest/policies/' + str(policy_id))
+
+    def get_all_policies(self):
+        """
+        Get a list of all policies in ThreadFix
+        """
+        return self._request('GET', 'rest/policies')
+
+    def get_application_policy_status(self, application_id):
+        """
+        Get the status for all policies attached to the application with the provided appId
+        :param application_id: Application identifier
+        """
+        return self._request('GET', 'rest/applications/' + str(application_id) + '/policyStatuses')
+
+    def add_application_to_policy(self, policy_id, application_id):
+        """
+        Adds an application to a policy
+        :param policy_id: Policy identifier
+        :param application_id: Application identifier
+        """
+        return self._request('POST', 'rest/policies/' + str(policy_id) + '/application/' + str(application_id))
+
+    def ad_hoc_policy_evaluation(self, application_id, policy_id):
+        """
+        Gets the status of a policy even if the policy is not attached to the application
+        :param application_id: Application identifier
+        :param policy_id: Policy identifier
+        """
+        return self._request('GET', 'rest/applications/' + str(application_id) + '/policy/eval?policyId=' + str(policy_id))
+
+    def retrieve_all_policies(self, team_id):
+        """
+        Get details for all policies attached to a team
+        :param team_id: Team identifier
+        """
+        return self._request('GET', 'rest/policies/team/' + str(team_id))
+
+    def add_policy_to_team(self, policy_id, team_id):
+        """
+        Adds a policy to a team and any application associated with that team
+        :param policy_id: Policy identifier
+        :param team_id: Team identifier
+        """
+        return self._request('POST', 'rest/policies/' + str(policy_id) + '/team/' + str(team_id))
+
+    def remove_policy_to_team(self, policy_id, team_id):
+        """
+        Removes a policy to a team and any application associated with that team
+        :param policy_id: Policy identifier
+        :param team_id: Team identifier
+        """
+        return self._request('DELETE', 'rest/policies/' + str(policy_id) + '/team/' + str(team_id) + '/remove')
+
     # Scans
 
     def upload_scan(self, application_id, file_path):
