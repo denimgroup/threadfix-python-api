@@ -13,7 +13,7 @@ import urllib3
 import requests.exceptions
 import requests.packages.urllib3
 
-from . import __version__ as version
+#from . import __version__ as version
 
 
 class ThreadFixProAPI(object):
@@ -22,7 +22,7 @@ class ThreadFixProAPI(object):
     def __init__(self, host, api_key, verify_ssl=True, timeout=30, user_agent=None, cert=None, debug=False):
         """
         Initialize a ThreadFix Pro API instance.
-        :param host: The URL for the ThreadFix Pro server. (e.g., http://localhost:8080/threadfix/)
+        :param host: The URL for the ThreadFix Pro server. (e.g., http://localhost:8080/threadfix/) NOTE: must include http://
         :param api_key: The API key generated on the ThreadFix Pro API Key page.
         :param verify_ssl: Specify if API requests will verify the host's SSL certificate, defaults to true.
         :param timeout: HTTP timeout in seconds, default is 30.
@@ -38,7 +38,7 @@ class ThreadFixProAPI(object):
         self.timeout = timeout
 
         if not user_agent:
-            self.user_agent = 'threadfix_pro_api/' + version
+            self.user_agent = 'threadfix_pro_api/2.7.5' 
         else:
             self.user_agent = user_agent
 
@@ -113,10 +113,11 @@ class ThreadFixProAPI(object):
         return self._request('GET',
                              'rest/applications/allTeamLookup?uniqueId=' + str(unique_id))
 
-    def update_application(self, name=None, url=None, unique_id=None, application_criticality=None, framework_type=None, repository_url=None, repository_type=None, repository_branch=None,
-                         repository_user_name=None, repository_password=None, repository_folder=None, filter_set=None, team=None, skip_application_merge=None, application_id):
+    def update_application(self, application_id, name=None, url=None, unique_id=None, application_criticality=None, framework_type=None, repository_url=None, repository_type=None, repository_branch=None,
+                         repository_user_name=None, repository_password=None, repository_folder=None, filter_set=None, team=None, skip_application_merge=None):
         """
         Updates the information of an application. Needs atleast one parameter to work
+        :param application_id: Application identifier
         :param name: New name for application
         :param unique_id: New unique id for application
         :param application_criticality: New application criticality for application
@@ -130,7 +131,6 @@ class ThreadFixProAPI(object):
         :param filter_set: New filter set for application
         :param team: New team for application
         :param skip_application_merge: Whether or not to merge the application
-        :param application_id: Application identifier
         """
         params = {}
         if name:
@@ -191,14 +191,15 @@ class ThreadFixProAPI(object):
         params = {'url' : url}
         return self._request('POST', 'rest/applications/' + str(application_id) + '/addUrl', params)
     
-    def add_manual_finding(self, is_static=False, vuln_type, long_description, severity, native_id=None, parameter=None, file_path=None, column=None,
-                            line_text=None, line_number=None, full_url=None, path=None, application_id):
+    def add_manual_finding(self,  application_id, vuln_type, long_description, severity, is_static=False, native_id=None, parameter=None, file_path=None, column=None,
+                            line_text=None, line_number=None, full_url=None, path=None):
         """
         Adds manual finding to application
-        :param is_static: Is the finding from a static or dynamic test
+        :param application_id: Application identifier
         :param vuln_type: Name of the vulnerability
         :param long_description: General description of the issue
         :param severity: Severity level of vulnerability from 1-5
+        :param is_static: Is the finding from a static or dynamic test
         :param native_id: Identifier for the vulnerability
         :param parameter: Requested parameters for vulnerability
         :param file_path: (Static only) Location of source file
@@ -207,7 +208,6 @@ class ThreadFixProAPI(object):
         :param line_number: (Static only) Line number for finding vulnerability source
         :param full_url: (Dynamic only) Absolute URL to page with vulnerability
         :param path: (Dynamic only) Relative path to the page with the vulnerability
-        :param application_id: Application identifier
         """
         params = {'vulnType' : vuln_type, 'long_description' : long_description, 'severity' : severity}
         if native_id:
@@ -238,13 +238,13 @@ class ThreadFixProAPI(object):
         params = {'versionName' : version_name, 'versionDate' : version_date}
         return self._request('POST', 'rest/applications/' + str(application_id) + '/version', params)
 
-    def update_application_version(self, version_name=None, version_date=None, application_id, version_id):
+    def update_application_version(self, application_id, version_id, version_name=None, version_date=None):
         """
         Updates the version data for an application
-        :param version_name: New name for version
-        :param version_date: New date for version
         :param application_id: Application identifier
         :param version_id: Version identifier
+        :param version_name: New name for version
+        :param version_date: New date for version
         """
         params = {}
         if version_name:
@@ -261,12 +261,12 @@ class ThreadFixProAPI(object):
         """
         return self._request('DELETE', 'rest/applications/' + str(application_id) + '/version/' + str(version_id))
 
-    def attach_file_to_application(self, file_name=None, file_path, application_id):
+    def attach_file_to_application(self, application_id, file_path, file_name=None,):
         """
         Uploads and attaches a file. to an application
-        :param file_name: A name to override the file name when uploaded
-        :param file_path: Path to the file to be uploaded.
         :param application_id: Application identifier.
+        :param file_path: Path to the file to be uploaded.
+        :param file_name: A name to override the file name when uploaded
         """
         params={}
         if file_name:
@@ -310,7 +310,6 @@ class ThreadFixProAPI(object):
         """
         return self._request('DELETE', 'rest/applications/' + str(application_id) + '/metadata/' + str(app_metadata_id) + '/delete')
 
-    #Note not implicitly in API
     def get_applications_by_team(self, team_id):
         """
         Retrieves all application using the given team id.
@@ -325,6 +324,182 @@ class ThreadFixProAPI(object):
                                      response_code=team_data.response_code, data=new_data)
         else:
             return team_data
+    
+    # Defect Trackers
+
+    def create_defect_tracker(self, defect_tracker_type_id, name, url, default_username=None, default_password=None, default_product_name=None):
+        """
+        Creates a new defect tracker
+        :param defect_tracker_type_id: The type of tracker to configure
+        :param name: Name to give the defect tracker
+        :param url: The url for the tracker
+        :param default_username: The default username that can be used when attaching the tracker to an application
+        :param default_password: The default password to use with the default username
+        :param default_product_name: A default project that can be used when attaching the tracker to an application
+        """
+        params = {'defectTrackerTypeId' : defect_tracker_type_id, 'name' : name, 'url' : url}
+        if default_username:
+            params['defaultUsername'] = default_username
+        if default_password:
+            params['defaultPassword'] = default_password
+        if default_product_name:
+            params['defaultProductName'] = default_product_name
+        return self._request('POST', 'rest/defectTrackers/new', params)
+
+    def get_defect_tracker_list(self):
+        """
+        Gets the list of Defect Trackers
+        """
+        return self._request('GET', 'rest/defectTrackers/list')
+
+    def get_application_defect_trackers(self, application_id):
+        """
+        Gets list of the Defect Trackers for an application
+        :param application_id: Application identifier
+        """
+        return self._request('GET', 'rest/applications/' + str(application_id) + '/appTrackers/listApplicationDefectTrackers')
+
+    def add_defect_tracker_to_application(self, application_id, defect_tracker_id, username, password, project_name, 
+                                            use_default_credentials=False, use_default_project=False):
+        """
+        Adds an existing Defect Tracker identified by its id to an application
+        :param application_id: Application identifier
+        :param defect_tracker_id: Defect Tracker identifier
+        :param username: Username to access the Defect Tracker
+        :param password: Password for the username to access the Defect Tracker
+        :param project_name: Name of project the Defect Tracker files defects to
+        :param use_default_credentials: If the tracker has default credentials set this to true 
+        :param use_default project: If the tracker has a default project set this to true 
+        """
+        params = {'defectTrackerId' : defect_tracker_id}
+        if not use_default_credentials:
+            params['username'] = username
+            params['password'] = password
+        if not use_default_project:
+            params['projectName'] = project_name
+        return self._request('POST', 'rest/applications/' + str(application_id) + '/appTrackers/addDefectTracker', params)
+
+    def get_defect_tracker_fields(self, application_id):
+        """
+        Retrieves the fields for the defect tracker attached to the app with the given appId
+        :params application_id: Application identifier
+        """
+        return self._request('GET', 'rest/defects/' + str(application_id) + '/defectTrackerFields')
+
+    def submit_defect(self, application_id, vulnerability_ids, additional_scanner_info=None):
+        """
+        Submits a defect for a vulnerability in the app with the given appId
+        :param application_id: Application identifier
+        :param vulnerability_ids: Ids for the vulnerabilities to file a defect for
+        :param additional_scanner_info: Denotes if the defect should include extra fields specified in defectDescription.vm.
+        """
+        params = {'vulnerabilityIds' : vulnerability_ids}
+        if additional_scanner_info:
+            params['AdditionalScannerInfo'] = additional_scanner_info
+        return self._request('POST', 'rest/defects/' + str(application_id) + '/defectSubmission', params)
+
+    def get_defect_tracker_types(self):
+        """
+        Returns a list of the availble defect tracker types and their IDs
+        """
+        return self._request('GET', 'rest/defectTrackers/types')
+
+    def get_defect_tracker_projects(self, defect_tracker_id):
+        """
+        Get a list of projects for a defect tracker. Only works if it has a default username and password
+        :param defect_tracker_id: Defect Tracker identifier
+        """
+        return self._request('GET', 'rest/defectTrackers/' + str(defect_tracker_id) + '/projects')
+
+    def get_defect_tracker_fields_for_specified_tracker(self, application_id, application_tracker_id):
+        """
+        Retrieves the fields for the defect tracker attached to the app with the given appId
+        :params application_id: Application identifier
+        :params application_tracker_id: Application Tracker identifier
+        """
+        return self._request('GET', 'rest/applications/' + str(application_id) + '/appTrackers/' + str(application_tracker_id) + '/defectTrackerFields')
+
+    def submit_defect_to_specified_tracker(self, application_id, application_tracker_id, vulnerability_ids, additional_scanner_info=None):
+        """
+        Submits a defect to the tracker with the given appTrackerId attached to the application with the given appId
+        :params application_id: Application identifier
+        :params application_tracker_id: Application Tracker identifier
+        :param vulnerability_ids: Ids for the vulnerabilities to file a defect for
+        :param additional_scanner_info: Denotes if the defect should include extra fields specified in defectDescription.vm.
+        """
+        params = {'vulnerabilityIds' : vulnerability_ids}
+        if additional_scanner_info:
+            params['AdditionalScannerInfo'] = additional_scanner_info
+        return self._request('POST', 'rest/applications/' + str(application_id) + '/appTrackers/' + str(application_tracker_id) + '/detectSubmission', params)
+
+    def update_defect_tracker(self, defect_tracker_id, default_username, default_password, name=None, url=None):
+        """
+        Update fields of a Defect Tracker
+        :param defect_tracker_id: Defect Tracker identifier
+        :param default_username: The user that will have access to the Defect Tracker
+        :param default_password: Password that goes along with default username
+        :param name: The new name for the tracker
+        :param url: The new URL for the tracker
+        """
+        params = {'defaultUsername' : default_username, 'defaultPassword' : default_password}
+        if name:
+            params['name'] = name
+        if url:
+            params['url'] = url
+        return self._request('PUT', 'rest/defectTrackers/' + str(defect_tracker_id) + '/update', params)
+
+    def list_defect_tracker_projects(self, defect_tracker_type_id, url, username, password, api_key):
+        """
+        Gets a list of projects for a Defect Tracker
+        :param defect_tracker_type_id: The type of the defect tracker
+        :param url: The URL for the tracker
+        :param username: The username used to request Defect Tracker projects
+        :param password: The password for the username
+        :param api_key: The API key used to request Defect Tracker projects
+        """
+        params = {'defectTrackerTypeId' : defect_tracker_type_id, 'url' : url, 'username' : username, 'password' : password, 'apiKey' : api_key}
+        return self._request('POST', 'rest/defectTrackers/projects', params)
+    
+    def delete_defect_trackers(self, defect_tracker_id):
+        """
+        Deletes a Defect Tracker
+        :param defect_tracker_id: Defect Tracker identifier
+        """
+        return self._request('DELETE', 'rest/defectTrackers/' + str(defect_tracker_id) + '/update')
+
+    def delete_defect_trackers(self, defect_tracker_profile_id):
+        """
+        Deletes a Defect Tracker
+        :param defect_tracker_profile_id: Defect Tracker profile identifier
+        """
+        return self._request('DELETE', 'rest/defectTrackers/profiles/' + str(defect_tracker_profile_id) + '/delete')
+
+    def defect_creation_health_check(self):
+        """
+        Checks that defect tracker information is valid. 
+        Supports only JIRA and HP Quality Center.
+        Requires that Defect Reporter has been set up for at least one application.
+        """
+        return self._request('GET', '/rest/defectTrackers/autoDefectCreationHealthCheck')
+
+    def add_vulnerability_to_existing_defect(self, application_id, tracker_id, vulnerability_ids, defect_id):
+        """
+        Allows user to add a vulnerability to a defect that has already been created
+        :param application_id: Application identifier
+        :param tracker_id: Tracker identifier
+        :param vulnerability_Ids: Ids for the vulnerabilities for which to file a defect.  All of the vulnerabilities are attached to the existing defect.
+        :param defect_id: The defect ID from the defect tracker application
+        """
+        params = {'vulnerabilityIds' : vulnerability_ids, 'defectId' : defect_id}
+        return self._request('POST', 'rest/applications/' + str(application_id) + '/appTrackers/' + str(tracker_id) + '/attachToDefect', params)
+
+    def delete_application_defect_trackers(self, application_id, tracker_id):
+        """
+        Deletes defect tracker for a specific application
+        :param application_id: Application identifier
+        :param tracker_id: Tracker identifier
+        """
+        return self._request('DELETE', 'rest/applications/' + str(application_id) + '/appTrackers/' + str(tracker_id) + '/delete')
 
     # Scans
 
@@ -386,16 +561,15 @@ class ThreadFixProAPI(object):
         """Common handler for all HTTP requests."""
         if not params:
             params = {}
-        params['apiKey'] = self.api_key
 
         headers = {
-            'User-Agent': self.user_agent,
-            'Accept': 'application/json'
+            'Accept': 'application/json',
+            'Authorization': 'APIKEY ' + self.api_key
         }
 
         try:
             if self.debug:
-                print(method + ' ' + url)
+                print(method + ' ' + self.host + url)
                 print(params)
 
             response = requests.request(method=method, url=self.host + url, params=params, files=files, headers=headers,
