@@ -1054,6 +1054,178 @@ class ThreadFixProAPI(object):
             params['showSharedVulnNotFound'] = show_shared_vuln_not_found
         return self._request('POST', 'rest/vulnerabilities', params)
 
+    def add_comment_to_vulnerability(self, vuln_id, comment, comment_tag_ids=None):
+        """
+        Adds a comment to the vulnerability with the given vulnId
+        :param vuln_id: Vulnerability identifier
+        :param comment: The message for the comment
+        :param comment_tag_ids: A comma-separated list of the Ids for any comment tags you want to attach to the comment
+        """
+        params = {'comment' : comment}
+        if comment_tag_ids:
+            params['commentTagIds'] = comment_tag_ids
+        return self._request('POST', 'rest/vulnerabilities/' + str(vuln_id) + '/addComment')
+
+    def list_severities(self):
+        """
+        Returns a list of severity levels in ThreadFix and their custom names
+        """
+        return self._request('GET', 'rest/severities')
+    
+    def update_vulnerability_severity(self, vulnerability_id, severity_name):
+        """
+        Changes the severity of the specified vulnerability to the specified severity
+        :param vulnerability_id: Vulnerability identifier
+        :param severity_name: Name of severity that the vulnerability is being changed to
+        """
+        return self._request('POST', 'rest/vulnerabilities/' + str(vulnerability_id) + '/severity/' + str(severity_name))
+
+    def close_vulnerabilities(self, vulnerability_id):
+        """
+        Closes the specified vulnerability
+        :param vulnerability_id: Vulnerabilities' identifiers
+        """
+        params = {'vulnerabilityIds' : vulnerability_id}
+        return self._request('POST', 'rest/vulnerabilities/close', params)
+        
+    def get_document_attached_to_a_vulnerability(self, document_id):
+        """
+        Displays content of document files
+        :param document_id: Document identifier
+        """
+        return self._request('GET', 'rest/documents/' + str(document_id) + '/download')
+
+    def attach_file_to_vulnerability(self, vuln_id, file_path, new_file_name=None):
+        """
+        Attaches a file to a vulnerability
+        :param vuln_id: Vulnerability identifier
+        :param file_path: Path to the file you want to attach to the vulnerability
+        :param new_file_name: A name to override the filename when it is attached to the vulnerability
+        """
+        params = {}
+        if new_file_name:
+            params['filename'] = new_file_name
+        files = {'file' : open(file_path, 'rb')}
+        return self._request('POST',  'rest/documents/vulnerabilities/' + str(vuln_id) + '/upload', params, files)
+
+    def mark_vulnerability_as_false_positive(self, vulnerability_id):
+        """
+        Marks the specified vulnerability as a false positive
+        :param vulnerability_id: Vulnerability identifier
+        """
+        return self._request('POST', 'rest/vulnerabilities/' + str(vulnerability_id) + '/setFalsePositive')
+
+    def add_tag_to_vulnerability(self, vulnerability_id, tag_id):
+        """
+        Adds specified tag to specified vulnerability
+        :param vulnerability_id: Vulnerability identifier
+        :param tag_id: Tag identifier
+        """
+        return self._request('POST', 'rest/vulnerabilities/' + str(vulnerability_id) + '/tags/add/' + str(tag_id))
+
+    def remove_tag_to_vulnerability(self, vulnerability_id, tag_id):
+        """
+        Removes specified tag to specified vulnerability
+        :param vulnerability_id: Vulnerability identifier
+        :param tag_id: Tag identifier
+        """
+        return self._request('POST', 'rest/vulnerabilities/' + str(vulnerability_id) + '/tags/remove/' + str(tag_id))
+
+    def list_vulnerabilities_for_a_tag(self, tag_id):
+        """
+        Returns a list of all vulnerabilities associated with a tag
+        :params tag_id: Tag identifier
+        """
+        return self._request('GET', 'rest/tags/' + str(tag_id) + '/listVulnerabilities')
+
+    def mark_vulnerability_as_exploitable(self, vulnerability_id):
+        """
+        Change the specified vulnerability to exploitable
+        :param vulnerability_id: Vulnerability identifer
+        """
+        return self._request('POST', 'rest/vulnerabilities/' + str(vulnerability_id) + '/setExploitable')
+
+    def mark_vulnerability_as_contested(self, vulnerability_id):
+        """
+        Change the specified vulnerability to contested
+        :param vulnerability_id: Vulnerability identifer
+        """
+        return self._request('POST', 'rest/vulnerabilities/' + str(vulnerability_id) + '/setContested')
+
+    def mark_vulnerability_as_verified(self, vulnerability_id):
+        """
+        Change the specified vulnerability to verified
+        :param vulnerability_id: Vulnerability identifer
+        """
+        return self._request('POST', 'rest/vulnerabilities/' + str(vulnerability_id) + '/setVerified')
+
+    def get_defect_details(self, defect_id):
+        """
+        Returns details about the selected defect
+        :param defect_id: Defect identifier
+        """
+        return self._request('GET', 'rest/defects/' + str(defect_id))
+    
+    def defect_search(self, paging=None, max_results=None, days_old=None, hours_old=None, aging_modifier=None, aging_date_type=None, start_date=None, end_date=None,
+                        status_updated_start_date=None, status_updated_end_date=None, defects=None, application_defect_tracker=None, statuses=None, show_active=None,
+                        show_open=None, show_closed=None):
+        """
+        Returns a filtered list of defects
+        :param paging: By default defects are displayed 10 to a page. Changing this value will allow user to display the next set of 10 defects and so on
+        :param max_results: Maximum number of defects to be returned. By default this method will only return up to 10 defects
+        :param days_old: Age in days of defect(s)
+        :param hours_old: Age in hours of defect(s)
+        :param aging_modifier: 	Applies modifier to either daysOld or hoursOld parameter. Accepted values are "less" and "more"
+        :param aging_date_type: Entering "created" will apply the search to the defect created date. Entering "status" will apply the search to the defect status updated date
+        :param start_date: Lower bound on defect dates. Format: yyyy-MM-dd or Epoch time (in milliseconds)
+        :param end_date: Upper bound on defect dates. Format: yyyy-MM-dd or Epoch time (in milliseconds)
+        :param status_updated_start_date: Lower bound on defect updated dates. Format: yyyy-MM-dd or Epoch time (in milliseconds)
+        :param status_updated_end_date: Upper bound on defect updated dates. Format: yyyy-MM-dd or Epoch time (in milliseconds)
+        :param defects: Serialized list of defects by id
+        :param application_defect_tracker: Serialized list of application defect trackers by id
+        :param statuses: Serialized list of defects by status
+        :param show_active: Flag to show only active defects
+        :param show_open: Flag to show only open defects
+        :param show_closed: Flag to show only closed defects
+        """
+        params = {}
+        if paging:
+            params['paging'] = paging
+        if max_results:
+            params['maxResults'] = max_results
+        if days_old:
+            params['daysOld'] = days_old
+        if hours_old:
+            params['hoursOld'] = hours_old
+        if aging_modifier:
+            params['agingModifier'] = aging_modifier
+        if aging_date_type:
+            params['agingDateType'] = aging_date_type
+        if start_date:
+            params['startDate'] = start_date
+        if end_date:
+            params['endDate'] = end_date
+        if status_updated_start_date:
+            params['statusUpdatedStartDate'] = status_updated_start_date
+        if status_updated_end_date:
+            params['statusUpdatedEndDate'] = status_updated_end_date
+        if defects:
+            for i in range(len(defects)):
+                params['defects[{}].id'.format(i)] = defects[i]
+        if application_defect_tracker:
+            for i in range(len(application_defect_tracker)):
+                params['applicationDefectTracker[{}].id'.format(i)] = application_defect_tracker[i]
+        if statuses:
+            for i in range(len(statuses)):
+                params['statuses[{}].status'.format(i)] = statuses[i]
+        if show_active:
+            params['showActive'] = show_active
+        if show_open:
+            params['showOpen'] = show_open
+        if show_closed:
+            params['showClosed'] = show_closed
+        return self._request('POST', 'rest/defects/search', params)
+
     # Utility
 
     def _request(self, method, url, params=None, files=None):
