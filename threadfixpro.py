@@ -823,7 +823,7 @@ class ThreadFixProAPI(object):
         """
         return self._request('GET', 'rest/tasks/requestScanAgentKey')
 
-    def request_task(self, scanners, agent_config_path, scan_agent_secure_key):\
+    def request_task(self, scanners, agent_config_path, scan_agent_secure_key):
         """
         Requests the next available task off the queue.
         :param scanners: Use this to only select taskss from specified scanner types
@@ -873,6 +873,186 @@ class ThreadFixProAPI(object):
         Retrieves the list of scanners that can be configured with the Scan Agent
         """
         return self._request('GET', 'rest/tasks/scanners')
+
+    #Vulnerabilities
+
+    def vulnerability_search(self, generic_vulnerabilities=None, teams=None, applications=None, channel_types=None, generic_severities=None, number_vulnerabilities=None,
+                            page=None, parameter=None, path=None, start_date=None, end_date=None, show_open=None, show_closed=None, show_false_positive=None, 
+                            show_not_false_positive=None, show_hidden=None, show_not_hidden=None, show_exploitable=None, show_not_exploitable=None, show_contested=None, 
+                            show_not_contested=None, show_verified=None, show_not_verified=None, number_merged=None, show_defect_present=None, show_defect_not_present=None, 
+                            show_defect_open=None, show_defect_closed=None, show_inconsistent_closed_defect_needs_scan=None, show_inconsistent_closed_defect_open_in_scan=None,
+                            show_inconsistent_open_defect=None, include_custom_text=None, show_comment_present=None, comment_tags=None, days_old_modifier=None,
+                            days_old=None, days_old_comments_modifier=None, days_old_comments=None, hours_old_comments_modifier=None, hours_old_comments=None, 
+                            commented_by_user=None, vulnerabilities=None, cves_list=None, export_type=None, tags=None, vuln_tags=None, defect_id=None,
+                            native_id=None, assign_to_user=None, show_shared_vuln_found=None, show_shared_vuln_not_found=None):
+        """
+        Returns a filtered list of vulnerabilities
+        :param generic_vulnerabilities: Serialized list of generic vulnerability IDs to narrow results to
+        :param teams: Serialized list of team IDs to narrow search to
+        :param applications: Serialized list of application IDs to narrow search to
+        :param channel_types: Serialized list of scanner names to narrow search to
+        :param generic_severities: Serialized list of generic severity values to narrow search to
+        :param number_vulnerabilities: Number of vulnerabilities to return defaults to 10
+        :param page: Which page of vulnerabilities to return with each page containing {number_vulnerabilities} to return
+        :param parameter: Filter to only return vulnerabilities containing this string in their parameters
+        :param path: Filter to only return vulnerabilities containing this String in their path
+        :param start_date: Lower bound on scan dates. Format: yyyy-MM-dd or Epoch time (in milliseconds)
+        :param end_date: Upper bound on scan dates. Format: yyyy-MM-dd or Epoch time (in milliseconds)
+        :param show_open: Flag to show only open vulnerabilites
+        :param show_closed: Flag to show only close vulnerabilities
+        :param show_false_positive: Flag to show only vulnerabilities that are false positives
+        :param show_not_false_positive: Flag to show only vulnerabilities that are not false positives
+        :param show_hidden: Flag to show hidden vulnerabilities
+        :param show_not_hidden: Flag to show only vulnerabilities that are not hidden
+        :param show_exploitable: Flag to show only vulnerabilities that are exploitable
+        :param show_not_exploitable: Flag to show only vulnerabilities that are not exploitable
+        :param show_contested: Flag to show only vulnerabilities that are contested
+        :param show_not_contested: Flag to show only vulnerabilities that are not contested
+        :param show_verified: Flag to show only verified vulnerabilities
+        :param show_not_verified: Flag to show only not verified vulnerabilities
+        :param number_merged: Number of vulnerabilities merged from different scans to narrow search to
+        :param show_defect_present: Flag to show vulnerabilities with defects
+        :param show_defect_not_present: Flag to show vulnerabilities without defects
+        :param show_defect_open: Flag to show vulnerabilities with open defects
+        :param show_defect_closed: Flag to show vulnerabilities with closed defects
+        :param show_inconsistent_closed_defect_needs_scan: Flag to show vulnerabilities that have closed defects but have not yet been closed by a scan
+        :param show_inconsistent_closed_defect_open_in_scan: Flag to show vulnerabilities that have closed defects but were found open in a scan since the defect was closed
+        :param show_inconsistent_open_defect: Flag to show vulnerabilities that have open defects but have been closed by scans
+        :param include_custom_text: Set to true to include Custom CWE Text in the response for each vulnerability
+        :param show_comment_present: Flag to show vulnerabilities with comments
+        :param comment_tags: Serialized list of comment tags. Example: commentTags[0].id=1
+        :param days_old_modifier: Should only be value of "less" or "more". Used in conjunction with daysOld parameter
+        :param days_old: Number of days in age of the vulnerability. Valid values are "10", "30", etc
+        :param days_old_comments_modifier: Should only be value of "less" or "more". Used in conjunction with daysOldComments parameter
+        :param days_old_comments: Number of days in age of the comment. Valid values are "10", "30", etc
+        :param hours_old_comments_modifier: Should only be value of "less" or "more". Used in conjunction with hoursOldComments parameter
+        :param hours_old_comments: Number of hours since comment was added to vulnerability. Valid values are "1", "10", etc
+        :param commented_by_user: Filter vulnerabilities by ID of user that added comments to it
+        :param vulnerabilities: Serialized list of vulnerability IDs
+        :param cves_list: Serialized list of CVE IDs
+        :param export_type: Type of export being performed (not case sensitive)
+        :param tags: Filters to show vulnerabilities from Applications that are tagged with these application tags
+        :param vuln_tags: lters to show vulnerabilities tagged with these vulnerability tags
+        :param defect_id: Filters to show vulnerabilities with this defect attached
+        :param native_id: Filters to show vulnerabilities with findings that have this native ID
+        :param assign_to_user: Filters to show vulnerabilities that have a finding with this value in their assignToUser column
+        :param show_shared_vuln_found: Filters to show only vulnerabilities that have been identified as Shared Vulnerabilities
+        :param show_shared_vuln_not_found: Filters to show only vulnerabilities that have not been identified as Shared Vulnerabilities
+        """
+        params = {}
+        if generic_vulnerabilities:
+            for i in range(len(generic_vulnerabilities)):
+                params['genericVulnerabilities[{}].id'.format(i)] = generic_vulnerabilities[i]
+        if teams:
+            for i in range(len(teams)):
+                params['teams[{}].id'.format(i)] = teams[i]
+        if applications:
+            for i in range(len(applications)):
+                params['applications[{}].id'.format(i)] = applications[i]
+        if channel_types:
+            for i in range(len(channel_types)):
+                params['channelTypes[{}].name'.format(i)] = channel_types[i]
+        if generic_severities:
+            for i in range(len(generic_severities)):
+                params['genericSeverities[{}].intValue'.format(i)] = generic_severities[i]
+        if number_vulnerabilities:
+            params['numberVulnerabilities'] = number_vulnerabilities
+        if page:
+            params['page'] = page
+        if parameter:
+            params['parameter'] = parameter
+        if path:
+            params['path'] = path
+        if start_date:
+            params['startDate'] = start_date
+        if end_date:
+            params['endDate'] = end_date
+        if show_open:
+            params['showOpen'] = show_open
+        if show_closed:
+            params['showClosed'] = show_closed
+        if show_false_positive:
+            param['showFalsePositive'] = show_false_positive
+        if show_not_false_positive:
+            param['showNotFalsePositive'] = show_not_false_positive
+        if show_hidden:
+            params['showHidden'] = show_hidden
+        if show_not_hidden:
+            params['showNotHidden'] = show_not_hidden
+        if show_exploitable:
+            params['showExploitable'] = show_exploitable
+        if show_not_exploitable:
+            params['showNotExploitable'] = show_not_exploitable
+        if show_contested:
+            params['showContested'] = show_contested
+        if show_not_contested:
+            params['showNotContested'] = show_not_contested
+        if show_verified:
+            params['showVerified'] = show_verified
+        if show_not_verified:
+            params['showNotVerified'] = show_not_verified
+        if number_merged:
+            params['numberMerged'] = number_merged
+        if show_defect_present:
+            params['showDefectPresent'] = show_defect_present
+        if show_defect_not_present:
+            params['showDefectNotPresent'] = show_defect_not_present
+        if show_defect_open:
+            params['showDefectOpen'] = show_defect_open
+        if show_defect_closed:
+            params['showDefectClosed'] = show_defect_closed
+        if show_inconsistent_closed_defect_needs_scan:
+            params['showInconsistentClosedDefectNeedsScan'] = show_inconsistent_closed_defect_needs_scan
+        if show_inconsistent_closed_defect_open_in_scan:
+            params['showInconsistentClosedDefectOpenInScan'] = show_inconsistent_closed_defect_open_in_scan
+        if show_inconsistent_open_defect:
+            params['showInconsistentOpenDefect'] = show_inconsistent_open_defect
+        if include_custom_text:
+            params['includeCustomText'] = include_custom_text
+        if show_comment_present:
+            params['showCommentPresent'] = show_comment_present
+        if comment_tags:
+            for i in range(len(comment_tags)):
+                params['commentTags[{}].id'.format(i)] = comment_tags[i]
+        if days_old_modifier:
+            params['daysOldModifier'] = days_old_modifier
+        if days_old:
+            params['daysOld'] = days_old
+        if days_old_comments_modifier:
+            params['daysOldCommentsModifier'] = days_old_comments_modifier
+        if days_old_comments:
+            params['daysOldComments'] = days_old_comments
+        if hours_old_comments_modifier:
+            params['hoursOldCommentsModifier'] = hours_old_comments_modifier
+        if hours_old_comments:
+            params['hoursOldComments'] = hours_old_comments
+        if commented_by_user:
+            params['commentedByUser'] = commented_by_user
+        if vulnerabilities:
+            for i in range(len(vulnerabilities)):
+                params['vulnerabilities[{}].id'.format(i)] = vulnerabilities[i]
+        if cves_list:
+            for i in range(len(cves_list)):
+                params['cvesList[{}].CVE'.format(i)] = cves_list[i]
+        if export_type:
+            params['exportType'] = export_type
+        if tags:
+            for i in range(len(tags)):
+                params['tags[{}].id'.format(i)] = tags[i]
+        if vuln_tags:
+            for i in range(len(vuln_tags)):
+                params['vulnTags[{}].id'.format(i)] = vuln_tags[i]
+        if defect_id:
+            params['defectId'] = defect_id
+        if native_id:
+            params['nativeId'] = native_id
+        if assign_to_user:
+            params['assignToUser'] = assign_to_user
+        if show_shared_vuln_found:
+            params['showSharedVulnFound'] = show_shared_vuln_found
+        if show_shared_vuln_not_found:
+            params['showSharedVulnNotFound'] = show_shared_vuln_not_found
+        return self._request('POST', 'rest/vulnerabilities', params)
 
     # Utility
 
