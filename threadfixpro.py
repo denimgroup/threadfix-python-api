@@ -1226,6 +1226,55 @@ class ThreadFixProAPI(object):
             params['showClosed'] = show_closed
         return self._request('POST', 'rest/defects/search', params)
 
+    #Web Application Firewalls (WAFs)
+
+    def create_waf(self, name, WAFtype):
+        """
+        Creates a WAF with the given name and type
+        :param name: Name for the WAF
+        :param WAFtype: Type of WAF you are creating
+        """
+        params = {'name' : name, 'type' : WAFtype}
+        return self._request('POST', 'rest/wafs/new', params)
+
+    def get_waf_by_id(self, waf_id):
+        """
+        Gets a WAF by the WAFId
+        :param waf_id: WAF identifier
+        """
+        return self._request('GET', 'rest/wafs/' + str(waf_id))
+
+    def get_waf_by_name(self, waf_name):
+        """
+        Gets a WAF by its name
+        :param waf_name: The name of the WAF being gotten
+        """
+        return self._request('GET', 'rest/wafs/lookup?name=' + str(waf_name))
+
+    def get_all_wafs(self):
+        """
+        Gets all WAFs in the system
+        """
+        return self._request('GET', 'rest/wafs')
+
+    def get_waf_rules(self, waf_id, app_id):
+        """
+        Returns the WAF rule text for one or all applications a WAF is attached to. If the appId is -1, it will get rules for all apps. 
+        If the appId is a valid application ID, rules will be generated for that application.'
+        :param waf_id: WAF identifier
+        :param app_id: Application identifier
+        """
+        return self._request('GET', 'rest/wafs/' + str(waf_id) + '/rules/app/' + str(app_id))
+
+    def upload_waf_log(self, waf_id, file_path):
+        """
+        Uploads WAF log
+        :param waf_id: WAF identifier
+        :param file_path: Path to file to be uploaded
+        """
+        files = {'file' : open(file_path, 'rb')}
+        return self._request('POST', 'rest/wafs/' + str(waf_id) + '/uploadLog', files=files)
+
     # Utility
 
     def _request(self, method, url, params=None, files=None):
