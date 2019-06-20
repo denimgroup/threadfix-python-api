@@ -598,7 +598,7 @@ class ThreadFixProAPI(object):
         """
         return self._request(
             'POST', 'rest/applications/' + str(application_id) + '/upload/multi',
-            files= [{'file' : open(file_path)} for file_path in file_paths]
+            files= [{'file' : open(file_path, 'rb')} for file_path in file_paths]
         )
 
     def check_pending_scan_status(self, application_id, scan_id):
@@ -763,6 +763,74 @@ class ThreadFixProAPI(object):
         if scan_config_id:
             params['scanConfigId'] = scan_config_id
         return self._request('POST', 'rest/tasks/queueScan', params)
+
+    def set_task_config(self, application_id, scanner_type, file_path):
+        """
+        Uploads a Scan Agent configuration file to an application that will be used by default for tasks with the relevant scanner.
+        :param application_id: The id for the app to upload the file to
+        :param scanner_type: The scanner the file will be used as a base for
+        :param file: The file to upload
+        """
+        params = {'appId' : application_id, 'scannerType' : scanner_type}
+        files = {'file' : open(file_path, 'rb')}
+        return self._request('POST', 'rest/tasks/setTaskConfig', params, files)
+
+    def request_scan_agent_key(self):
+        """
+        Request a Secure Scan Agent Key.  This key is used to request scan agent tasks and prevent multiple scan agents from interacting with the same task.
+        """
+        return self._request('GET', 'rest/tasks/requestScanAgentKey')
+
+    def request_task(self, scanners, agent_config_path, scan_agent_secure_key):\
+        """
+        Requests the next available task off the queue.
+        :param scanners: Use this to only select taskss from specified scanner types
+        :param agent_config_path: The path to the scangent.properties file your scan agent generated
+        :param scan_agent_secure_key: A Secure Scan Agent Key obtained from the “Request Scan Agent Key” call
+        """
+        params = {'scanners' : scanners, 'scanAgentSecureKey' : scan_agent_secure_key}
+        files = {'files' : open(agent_config_path, 'rb')}
+        return self._request('POST', 'rest/tasks/requestTask', params, files)
+
+    def update_task_status(self, scan_queue_task_id, message, scan_agent_secure_key, secure_task_key):
+        """
+        Sends a status update to ThreadFix for the Scan Agent
+        :param scan_queue_task_id: ID for the Scan Agent Task to update
+        :param message: The status update message
+        :param scan_agent_secure_key: A Secure Scan Agent Key obtained from the “Request Scan Agent Key” call
+        :param secure_task_key: The Secure Task Key that was returned when the Task was assigned from the queue
+        """
+        params = {'scanQueueTaskId' : scan_queue_task_id,  'message' : message, 'scanAgentSecureKey' : scan_agent_secure_key, 'secureTaskKey' : secure_task_key}
+        return self._request('POST', 'rest/tasks/taskStatusUpdate', params)
+
+    def complete_task(self, scan_queue_task_id, file_path, scan_agent_secure_key, secure_task_key):
+        """
+        Marks a task as completed and uploads the scan file to the task’s application
+        :param scan_queue_task_id: ID for the Scan Agent Task
+        :param file_path: The path to the file to upload
+        :param scan_agent_secure_key: A Secure Scan Agent Key obtained from the “Request Scan Agent Key” call
+        :param secure_task_key: The Secure Task Key that was returned when the Task was assigned from the queue
+        """
+        params = {'scanQueueTaskId' : scan_queue_task_id, 'scanAgentSecureKey' : scan_agent_secure_key, 'secureTaskKey' : secure_task_key}
+        files = {'file' : open(file_path, 'rb')}
+        return self._request('POST', 'rest/tasks/completeTask', params, files)
+
+    def fail_task(self, scan_queue_task_id, message, scan_agent_secure_key, secure_task_key):
+        """
+        Marks a task as failed, to complete it without a file upload.
+        :param scan_queue_task_id: ID for the Scan Agent Task to mark as failed
+        :param message: The message to provide reason for failure
+        :param scan_agent_secure_key: A Secure Scan Agent Key obtained from the “Request Scan Agent Key” call
+        :param secure_task_key: The Secure Task Key that was returned when the Task was assigned from the queue
+        """
+        params = {'scanQueueTaskId' : scan_queue_task_id,  'message' : message, 'scanAgentSecureKey' : scan_agent_secure_key, 'secureTaskKey' : secure_task_key}
+        return self._request('POST', 'rest/tasks/failTask', params)
+
+    def get_scan_agent_scanners(self):
+        """
+        Retrieves the list of scanners that can be configured with the Scan Agent
+        """
+        return self._request('GET', 'rest/tasks/scanners')
 
     # Utility
 
