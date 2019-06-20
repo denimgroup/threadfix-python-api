@@ -58,13 +58,55 @@ class ThreadFixProAPI(object):
         params = {"name": name}
         return self._request('POST', 'rest/teams/new', params)
 
-    def list_teams(self):
-        """Retrieves all the teams."""
+    def get_team_by_id(self, team_id):
+        """
+        Retrieves team with id of team_id'
+        :param team_id: ID of the team being gotten
+        """
+        return self._request('GET', 'rest/teams/' + str(team_id))
+
+    def get_team_by_name(self, team_name):
+        """
+        Retrieves team with name of team_name
+        :param team_name: Name of the team being gotten
+        """
+        return self._request('GET', 'rest/teams/lookup?name=' + str(team_name))
+
+    def get_all_teams(self):
+        """
+        Retrieves all the teams.
+        """
         return self._request('GET', 'rest/teams')
 
-    def get_team_by_id(self, team_id):
-        """Retrieves team with id of team_id"""
-        return self._request('GET', 'rest/teams/{}'.format(team_id))
+    def update_team(self, team_id, name):
+        """
+        Updates team with teamId
+        :param team_id: Team identifier
+        :param name: New name to assign to the team
+        """
+        params = {'name' : name}
+        return self._request('PUT', 'rest/teams/' + str(team_id) + '/update', params)
+
+    def get_team_event_history(self, team_id, pages=None, page_size=None):
+        """
+        Lists event history for a team
+        :param team_id: Team identifier
+        :param pages: Number of events to return. By default this method will return up to 10 events
+        :param page_size: Can be used to return a different page of events, with each page of events containing page_size events
+        """
+        params = {}
+        if pages:
+            params['page'] = pages
+        if page_size:
+            params['pageSize'] = page_size
+        return self._request('POST', 'rest/events/organization/' + str(team_id), params)
+
+    def delete_team(self, team_id):
+        """
+        Deletes a team by the provided teamId
+        :param team_id: Team identifier
+        """
+        return self._request('DELETE', 'rest/teams/' + str(team_id) + '/delete')
 
     # Application
 
