@@ -13,20 +13,7 @@ import urllib3
 import requests.exceptions
 import requests.packages.urllib3
 
-from _team import TeamsAPI
-from _application import ApplicationsAPI
-from _defect_trackers import DefectTrackersAPI
-from _policies import PoliciesAPI
-from _scans import ScansAPI
-from _tags import TagsAPI
-from _tasks import TasksAPI
-from _vulnerabilities import VulnerabilitiesAPI
-from _waf import WafsAPI
-from _cicd import CICDAPI
-from _remote_providers import RemoteProvidersAPI
-from _users_roles_and_groups import UsersRolesAndGroupsAPI
-from _email_reporting import EmailReportingAPI
-from _miscellaneous import MiscellaneousAPI
+import _utils
 
 class ThreadFixProAPI(object):
     """An API wrapper to facilitate interactions to and from ThreadFix."""

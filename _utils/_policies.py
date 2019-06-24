@@ -12,13 +12,13 @@ import urllib3
 import requests.exceptions
 import requests.packages.urllib3
 
-from _utilities import ThreadFixProResponse
+from ._utilities import ThreadFixProResponse
 
-class TagsAPI(object):
+class PoliciesAPI(object):
 
     def __init__(self, host, api_key, verify_ssl=True, timeout=30, user_agent=None, cert=None, debug=False):
         """
-        Initialize a ThreadFix Pro Tags API instance.
+        Initialize a ThreadFix Pro Policies API instance.
         :param host: The URL for the ThreadFix Pro server. (e.g., http://localhost:8080/threadfix/) NOTE: must include http:// TODO: make it so that it is required or implicitly added if forgotten
         :param api_key: The API key generated on the ThreadFix Pro API Key page.
         :param verify_ssl: Specify if API requests will verify the host's SSL certificate, defaults to true.
@@ -45,86 +45,64 @@ class TagsAPI(object):
         if not self.verify_ssl:
             urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning) # Disabling SSL warning messages if verification is disabled.
 
-    def create_tag(self, name, tag_type="APPLICATION"):
+    def get_policy(self, policy_id):
         """
-        Creats a new tag with the given name
-        :param name: Name to assign the new tag. 60 character limit
-        :param tag_type: The type of tag to create
+        Get details for a policy
+        :param policy_id: Policy identifier
         """
-        params = {'name' : name, 'tagType' : tag_type}
-        return self._request('POST', 'rest/tags/new', params)
+        return self._request('GET', 'rest/policies/' + str(policy_id))
 
-    def get_tag_by_id(self, tag_id):
+    def get_all_policies(self):
         """
-        Gets tag by the given tagId
-        :param tag_id: Tag identifier
+        Get a list of all policies in ThreadFix
         """
-        return self._request('GET', 'rest/tags/' + str(tag_id))
+        return self._request('GET', 'rest/policies')
 
-    def get_tag_by_name(self, tag_name):
+    def get_application_policy_status(self, application_id):
         """
-        Gets tag by the given name
-        :param tag_name: The name of a tag to be gotten
-        """
-        return self._request('GET', 'rest/tags/lookup?name=' + str(tag_name))
-
-    def get_tags_by_vulnerability(self, vuln_id):
-        """
-        Gets tags attached to a given vulnerability
-        :param vuln_id: The identifier of the vulnerability to get the tags from
-        """
-        return self._request('GET', 'rest/tags/vulnerabilities' + str(vuln_id))
-
-    def get_all_tags(self):
-        """
-        Returns a list of all tags and returns their JSON
-        """
-        return self._request('GET', 'rest/tags/index')
-
-    def list_tags(self):
-        """
-        Retrieves a list of only tag names, ids, and types.
-        """
-        return self._request('GET', 'rest/tags/list')
-
-    def update_tag(self, tag_id, name):
-        """
-        Updates the name of the tag with the given tagId
-        :param tag_id: Tag identifier
-        :param name: New name to assign the tag
-        """
-        params = {'name' : name}
-        return self._request('POST', 'rest/tags/' + str(tag_id) + '/update', params)
-
-    def add_tag_to_application(self, application_id, tag_id):
-        """
-        Attaches the tag with the given tagId to the app with the given appId
+        Get the status for all policies attached to the application with the provided appId
         :param application_id: Application identifier
-        :param tag_id: Tag identifier
         """
-        return self._request('POST', 'rest/applications/' + str(application_id) + '/tags/add/' + str(tag_id))
+        return self._request('GET', 'rest/applications/' + str(application_id) + '/policyStatuses')
 
-    def remove_tag_to_application(self, application_id, tag_id):
+    def add_application_to_policy(self, policy_id, application_id):
         """
-        Removes the tag with the given tagId to the app with the given appId
+        Adds an application to a policy
+        :param policy_id: Policy identifier
         :param application_id: Application identifier
-        :param tag_id: Tag identifier
         """
-        return self._request('POST', 'rest/applications/' + str(application_id) + '/tags/remove/' + str(tag_id))
+        return self._request('POST', 'rest/policies/' + str(policy_id) + '/application/' + str(application_id))
 
-    def delete_tag(self, tag_id):
+    def ad_hoc_policy_evaluation(self, application_id, policy_id):
         """
-        Deletes the tag with the given tagId
-        :params tag_id: Tag identifier
+        Gets the status of a policy even if the policy is not attached to the application
+        :param application_id: Application identifier
+        :param policy_id: Policy identifier
         """
-        return self._request('POST', 'rest/tags/' + str(tag_id) + '/delete')
+        return self._request('GET', 'rest/applications/' + str(application_id) + '/policy/eval?policyId=' + str(policy_id))
 
-    def list_applications_for_tag(self, tag_id):
+    def retrieve_all_policies(self, team_id):
         """
-        Returns the JSON of the apps that have the tag with the given tagId
-        :params tag_id: Tag identifier
+        Get details for all policies attached to a team
+        :param team_id: Team identifier
         """
-        return self._request('GET', 'rest/tags/' + str(tag_id) + '/listApplications')
+        return self._request('GET', 'rest/policies/team/' + str(team_id))
+
+    def add_policy_to_team(self, policy_id, team_id):
+        """
+        Adds a policy to a team and any application associated with that team
+        :param policy_id: Policy identifier
+        :param team_id: Team identifier
+        """
+        return self._request('POST', 'rest/policies/' + str(policy_id) + '/team/' + str(team_id))
+
+    def remove_policy_to_team(self, policy_id, team_id):
+        """
+        Removes a policy to a team and any application associated with that team
+        :param policy_id: Policy identifier
+        :param team_id: Team identifier
+        """
+        return self._request('DELETE', 'rest/policies/' + str(policy_id) + '/team/' + str(team_id) + '/remove')
 
     # Utility
 

@@ -12,7 +12,7 @@ import urllib3
 import requests.exceptions
 import requests.packages.urllib3
 
-from _utilities import ThreadFixProResponse
+from ._utilities import ThreadFixProResponse
 
 class ApplicationsAPI(object):
 

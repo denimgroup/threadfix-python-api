@@ -12,13 +12,13 @@ import urllib3
 import requests.exceptions
 import requests.packages.urllib3
 
-from _utilities import ThreadFixProResponse
+from ._utilities import ThreadFixProResponse
 
-class TeamsAPI(object):
+class WafsAPI(object):
 
     def __init__(self, host, api_key, verify_ssl=True, timeout=30, user_agent=None, cert=None, debug=False):
         """
-        Initialize a ThreadFix Pro Teams API instance.
+        Initialize a ThreadFix Pro WAFs API instance.
         :param host: The URL for the ThreadFix Pro server. (e.g., http://localhost:8080/threadfix/) NOTE: must include http:// TODO: make it so that it is required or implicitly added if forgotten
         :param api_key: The API key generated on the ThreadFix Pro API Key page.
         :param verify_ssl: Specify if API requests will verify the host's SSL certificate, defaults to true.
@@ -45,64 +45,53 @@ class TeamsAPI(object):
         if not self.verify_ssl:
             urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning) # Disabling SSL warning messages if verification is disabled.
 
-    def create_team(self, name):
+    def create_waf(self, name, WAFtype):
         """
-        Creates a new team
-        :param name: The name of the new team being created
+        Creates a WAF with the given name and type
+        :param name: Name for the WAF
+        :param WAFtype: Type of WAF you are creating
         """
-        params = {"name": name}
-        return request('POST', 'rest/teams/new', params, debug=self.debug)
+        params = {'name' : name, 'type' : WAFtype}
+        return self._request('POST', 'rest/wafs/new', params)
 
-    def get_team_by_id(self, team_id):
+    def get_waf_by_id(self, waf_id):
         """
-        Retrieves team with id of team_id'
-        :param team_id: ID of the team being gotten
+        Gets a WAF by the WAFId
+        :param waf_id: WAF identifier
         """
-        return request('GET', 'rest/teams/' + str(team_id))
+        return self._request('GET', 'rest/wafs/' + str(waf_id))
 
-    def get_team_by_name(self, team_name):
+    def get_waf_by_name(self, waf_name):
         """
-        Retrieves team with name of team_name
-        :param team_name: Name of the team being gotten
+        Gets a WAF by its name
+        :param waf_name: The name of the WAF being gotten
         """
-        return request('GET', 'rest/teams/lookup?name=' + str(team_name))
+        return self._request('GET', 'rest/wafs/lookup?name=' + str(waf_name))
 
-    def get_all_teams(self):
+    def get_all_wafs(self):
         """
-        Retrieves all the teams.
+        Gets all WAFs in the system
         """
-        return request('GET', 'rest/teams')
+        return self._request('GET', 'rest/wafs')
 
-    def update_team(self, team_id, name):
+    def get_waf_rules(self, waf_id, app_id):
         """
-        Updates team with teamId
-        :param team_id: Team identifier
-        :param name: New name to assign to the team
+        Returns the WAF rule text for one or all applications a WAF is attached to. If the appId is -1, it will get rules for all apps. 
+        If the appId is a valid application ID, rules will be generated for that application.'
+        :param waf_id: WAF identifier
+        :param app_id: Application identifier
         """
-        params = {'name' : name}
-        return request('PUT', 'rest/teams/' + str(team_id) + '/update', params)
+        return self._request('GET', 'rest/wafs/' + str(waf_id) + '/rules/app/' + str(app_id))
 
-    def get_team_event_history(self, team_id, pages=None, page_size=None):
+    def upload_waf_log(self, waf_id, file_path):
         """
-        Lists event history for a team
-        :param team_id: Team identifier
-        :param pages: Number of events to return. By default this method will return up to 10 events
-        :param page_size: Can be used to return a different page of events, with each page of events containing page_size events
+        Uploads WAF log
+        :param waf_id: WAF identifier
+        :param file_path: Path to file to be uploaded
         """
-        params = {}
-        if pages:
-            params['page'] = pages
-        if page_size:
-            params['pageSize'] = page_size
-        return request('POST', 'rest/events/organization/' + str(team_id), params)
+        files = {'file' : open(file_path, 'rb')}
+        return self._request('POST', 'rest/wafs/' + str(waf_id) + '/uploadLog', files=files)
 
-    def delete_team(self, team_id):
-        """
-        Deletes a team by the provided teamId
-        :param team_id: Team identifier
-        """
-        return request('DELETE', 'rest/teams/' + str(team_id) + '/delete')
-    
     # Utility
 
     def _request(self, method, url, params=None, files=None):

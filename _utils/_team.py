@@ -12,13 +12,13 @@ import urllib3
 import requests.exceptions
 import requests.packages.urllib3
 
-from _utilities import ThreadFixProResponse
+from ._utilities import ThreadFixProResponse
 
-class PoliciesAPI(object):
+class TeamsAPI(object):
 
     def __init__(self, host, api_key, verify_ssl=True, timeout=30, user_agent=None, cert=None, debug=False):
         """
-        Initialize a ThreadFix Pro Policies API instance.
+        Initialize a ThreadFix Pro Teams API instance.
         :param host: The URL for the ThreadFix Pro server. (e.g., http://localhost:8080/threadfix/) NOTE: must include http:// TODO: make it so that it is required or implicitly added if forgotten
         :param api_key: The API key generated on the ThreadFix Pro API Key page.
         :param verify_ssl: Specify if API requests will verify the host's SSL certificate, defaults to true.
@@ -45,65 +45,64 @@ class PoliciesAPI(object):
         if not self.verify_ssl:
             urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning) # Disabling SSL warning messages if verification is disabled.
 
-    def get_policy(self, policy_id):
+    def create_team(self, name):
         """
-        Get details for a policy
-        :param policy_id: Policy identifier
+        Creates a new team
+        :param name: The name of the new team being created
         """
-        return self._request('GET', 'rest/policies/' + str(policy_id))
+        params = {"name": name}
+        return request('POST', 'rest/teams/new', params, debug=self.debug)
 
-    def get_all_policies(self):
+    def get_team_by_id(self, team_id):
         """
-        Get a list of all policies in ThreadFix
+        Retrieves team with id of team_id'
+        :param team_id: ID of the team being gotten
         """
-        return self._request('GET', 'rest/policies')
+        return request('GET', 'rest/teams/' + str(team_id))
 
-    def get_application_policy_status(self, application_id):
+    def get_team_by_name(self, team_name):
         """
-        Get the status for all policies attached to the application with the provided appId
-        :param application_id: Application identifier
+        Retrieves team with name of team_name
+        :param team_name: Name of the team being gotten
         """
-        return self._request('GET', 'rest/applications/' + str(application_id) + '/policyStatuses')
+        return request('GET', 'rest/teams/lookup?name=' + str(team_name))
 
-    def add_application_to_policy(self, policy_id, application_id):
+    def get_all_teams(self):
         """
-        Adds an application to a policy
-        :param policy_id: Policy identifier
-        :param application_id: Application identifier
+        Retrieves all the teams.
         """
-        return self._request('POST', 'rest/policies/' + str(policy_id) + '/application/' + str(application_id))
+        return request('GET', 'rest/teams')
 
-    def ad_hoc_policy_evaluation(self, application_id, policy_id):
+    def update_team(self, team_id, name):
         """
-        Gets the status of a policy even if the policy is not attached to the application
-        :param application_id: Application identifier
-        :param policy_id: Policy identifier
+        Updates team with teamId
+        :param team_id: Team identifier
+        :param name: New name to assign to the team
         """
-        return self._request('GET', 'rest/applications/' + str(application_id) + '/policy/eval?policyId=' + str(policy_id))
+        params = {'name' : name}
+        return request('PUT', 'rest/teams/' + str(team_id) + '/update', params)
 
-    def retrieve_all_policies(self, team_id):
+    def get_team_event_history(self, team_id, pages=None, page_size=None):
         """
-        Get details for all policies attached to a team
+        Lists event history for a team
+        :param team_id: Team identifier
+        :param pages: Number of events to return. By default this method will return up to 10 events
+        :param page_size: Can be used to return a different page of events, with each page of events containing page_size events
+        """
+        params = {}
+        if pages:
+            params['page'] = pages
+        if page_size:
+            params['pageSize'] = page_size
+        return request('POST', 'rest/events/organization/' + str(team_id), params)
+
+    def delete_team(self, team_id):
+        """
+        Deletes a team by the provided teamId
         :param team_id: Team identifier
         """
-        return self._request('GET', 'rest/policies/team/' + str(team_id))
-
-    def add_policy_to_team(self, policy_id, team_id):
-        """
-        Adds a policy to a team and any application associated with that team
-        :param policy_id: Policy identifier
-        :param team_id: Team identifier
-        """
-        return self._request('POST', 'rest/policies/' + str(policy_id) + '/team/' + str(team_id))
-
-    def remove_policy_to_team(self, policy_id, team_id):
-        """
-        Removes a policy to a team and any application associated with that team
-        :param policy_id: Policy identifier
-        :param team_id: Team identifier
-        """
-        return self._request('DELETE', 'rest/policies/' + str(policy_id) + '/team/' + str(team_id) + '/remove')
-
+        return request('DELETE', 'rest/teams/' + str(team_id) + '/delete')
+    
     # Utility
 
     def _request(self, method, url, params=None, files=None):

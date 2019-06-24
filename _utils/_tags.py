@@ -12,13 +12,13 @@ import urllib3
 import requests.exceptions
 import requests.packages.urllib3
 
-from _utilities import ThreadFixProResponse
+from ._utilities import ThreadFixProResponse
 
-class WafsAPI(object):
+class TagsAPI(object):
 
     def __init__(self, host, api_key, verify_ssl=True, timeout=30, user_agent=None, cert=None, debug=False):
         """
-        Initialize a ThreadFix Pro WAFs API instance.
+        Initialize a ThreadFix Pro Tags API instance.
         :param host: The URL for the ThreadFix Pro server. (e.g., http://localhost:8080/threadfix/) NOTE: must include http:// TODO: make it so that it is required or implicitly added if forgotten
         :param api_key: The API key generated on the ThreadFix Pro API Key page.
         :param verify_ssl: Specify if API requests will verify the host's SSL certificate, defaults to true.
@@ -45,52 +45,86 @@ class WafsAPI(object):
         if not self.verify_ssl:
             urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning) # Disabling SSL warning messages if verification is disabled.
 
-    def create_waf(self, name, WAFtype):
+    def create_tag(self, name, tag_type="APPLICATION"):
         """
-        Creates a WAF with the given name and type
-        :param name: Name for the WAF
-        :param WAFtype: Type of WAF you are creating
+        Creats a new tag with the given name
+        :param name: Name to assign the new tag. 60 character limit
+        :param tag_type: The type of tag to create
         """
-        params = {'name' : name, 'type' : WAFtype}
-        return self._request('POST', 'rest/wafs/new', params)
+        params = {'name' : name, 'tagType' : tag_type}
+        return self._request('POST', 'rest/tags/new', params)
 
-    def get_waf_by_id(self, waf_id):
+    def get_tag_by_id(self, tag_id):
         """
-        Gets a WAF by the WAFId
-        :param waf_id: WAF identifier
+        Gets tag by the given tagId
+        :param tag_id: Tag identifier
         """
-        return self._request('GET', 'rest/wafs/' + str(waf_id))
+        return self._request('GET', 'rest/tags/' + str(tag_id))
 
-    def get_waf_by_name(self, waf_name):
+    def get_tag_by_name(self, tag_name):
         """
-        Gets a WAF by its name
-        :param waf_name: The name of the WAF being gotten
+        Gets tag by the given name
+        :param tag_name: The name of a tag to be gotten
         """
-        return self._request('GET', 'rest/wafs/lookup?name=' + str(waf_name))
+        return self._request('GET', 'rest/tags/lookup?name=' + str(tag_name))
 
-    def get_all_wafs(self):
+    def get_tags_by_vulnerability(self, vuln_id):
         """
-        Gets all WAFs in the system
+        Gets tags attached to a given vulnerability
+        :param vuln_id: The identifier of the vulnerability to get the tags from
         """
-        return self._request('GET', 'rest/wafs')
+        return self._request('GET', 'rest/tags/vulnerabilities' + str(vuln_id))
 
-    def get_waf_rules(self, waf_id, app_id):
+    def get_all_tags(self):
         """
-        Returns the WAF rule text for one or all applications a WAF is attached to. If the appId is -1, it will get rules for all apps. 
-        If the appId is a valid application ID, rules will be generated for that application.'
-        :param waf_id: WAF identifier
-        :param app_id: Application identifier
+        Returns a list of all tags and returns their JSON
         """
-        return self._request('GET', 'rest/wafs/' + str(waf_id) + '/rules/app/' + str(app_id))
+        return self._request('GET', 'rest/tags/index')
 
-    def upload_waf_log(self, waf_id, file_path):
+    def list_tags(self):
         """
-        Uploads WAF log
-        :param waf_id: WAF identifier
-        :param file_path: Path to file to be uploaded
+        Retrieves a list of only tag names, ids, and types.
         """
-        files = {'file' : open(file_path, 'rb')}
-        return self._request('POST', 'rest/wafs/' + str(waf_id) + '/uploadLog', files=files)
+        return self._request('GET', 'rest/tags/list')
+
+    def update_tag(self, tag_id, name):
+        """
+        Updates the name of the tag with the given tagId
+        :param tag_id: Tag identifier
+        :param name: New name to assign the tag
+        """
+        params = {'name' : name}
+        return self._request('POST', 'rest/tags/' + str(tag_id) + '/update', params)
+
+    def add_tag_to_application(self, application_id, tag_id):
+        """
+        Attaches the tag with the given tagId to the app with the given appId
+        :param application_id: Application identifier
+        :param tag_id: Tag identifier
+        """
+        return self._request('POST', 'rest/applications/' + str(application_id) + '/tags/add/' + str(tag_id))
+
+    def remove_tag_to_application(self, application_id, tag_id):
+        """
+        Removes the tag with the given tagId to the app with the given appId
+        :param application_id: Application identifier
+        :param tag_id: Tag identifier
+        """
+        return self._request('POST', 'rest/applications/' + str(application_id) + '/tags/remove/' + str(tag_id))
+
+    def delete_tag(self, tag_id):
+        """
+        Deletes the tag with the given tagId
+        :params tag_id: Tag identifier
+        """
+        return self._request('POST', 'rest/tags/' + str(tag_id) + '/delete')
+
+    def list_applications_for_tag(self, tag_id):
+        """
+        Returns the JSON of the apps that have the tag with the given tagId
+        :params tag_id: Tag identifier
+        """
+        return self._request('GET', 'rest/tags/' + str(tag_id) + '/listApplications')
 
     # Utility
 
