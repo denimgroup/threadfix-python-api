@@ -13,7 +13,7 @@ import urllib3
 import requests.exceptions
 import requests.packages.urllib3
 
-import _utils
+from _utils import *
 
 class ThreadFixProAPI(object):
     """An API wrapper to facilitate interactions to and from ThreadFix."""
