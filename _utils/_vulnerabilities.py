@@ -141,9 +141,9 @@ class VulnerabilitiesAPI(object):
         if show_closed:
             params['showClosed'] = show_closed
         if show_false_positive:
-            param['showFalsePositive'] = show_false_positive
+            params['showFalsePositive'] = show_false_positive
         if show_not_false_positive:
-            param['showNotFalsePositive'] = show_not_false_positive
+            params['showNotFalsePositive'] = show_not_false_positive
         if show_hidden:
             params['showHidden'] = show_hidden
         if show_not_hidden:
