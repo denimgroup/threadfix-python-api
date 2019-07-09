@@ -233,7 +233,7 @@ class VulnerabilitiesAPI(object):
         params = {'comment' : comment}
         if comment_tag_ids:
             params['commentTagIds'] = comment_tag_ids
-        return self._request('POST', 'rest/vulnerabilities/' + str(vuln_id) + '/addComment')
+        return self._request('POST', 'rest/vulnerabilities/' + str(vuln_id) + '/addComment', params=params)
 
     def list_severities(self):
         """
