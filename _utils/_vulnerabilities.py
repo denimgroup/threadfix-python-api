@@ -233,7 +233,7 @@ class VulnerabilitiesAPI(object):
         params = {'comment' : comment}
         if comment_tag_ids:
             params['commentTagIds'] = comment_tag_ids
-        return self._request('POST', 'rest/vulnerabilities/' + str(vuln_id) + '/addComment')
+        return self._request('POST', 'rest/vulnerabilities/' + str(vuln_id) + '/addComment', params=params)
 
     def list_severities(self):
         """
@@ -290,7 +290,7 @@ class VulnerabilitiesAPI(object):
         :param vulnerability_id: Vulnerability identifier
         :param tag_id: Tag identifier
         """
-        return self._request('POST', 'rest/vulnerabilities/' + str(vulnerability_id) + '/tags/add/' + str(tag_id))
+        return self._request('POST', 'rest/vulnerabilities/' + str(vulnerability_id) + '/tags/' + str(tag_id) + '/add')
 
     def remove_tag_to_vulnerability(self, vulnerability_id, tag_id):
         """
