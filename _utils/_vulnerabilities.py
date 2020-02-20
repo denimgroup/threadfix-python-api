@@ -141,9 +141,9 @@ class VulnerabilitiesAPI(object):
         if show_closed:
             params['showClosed'] = show_closed
         if show_false_positive:
-            param['showFalsePositive'] = show_false_positive
+            params['showFalsePositive'] = show_false_positive
         if show_not_false_positive:
-            param['showNotFalsePositive'] = show_not_false_positive
+            params['showNotFalsePositive'] = show_not_false_positive
         if show_hidden:
             params['showHidden'] = show_hidden
         if show_not_hidden:
@@ -221,7 +221,7 @@ class VulnerabilitiesAPI(object):
             params['showSharedVulnFound'] = show_shared_vuln_found
         if show_shared_vuln_not_found:
             params['showSharedVulnNotFound'] = show_shared_vuln_not_found
-        return self._request('POST', 'rest/vulnerabilities', params)
+        return self._request('POST', 'rest/latest/vulnerabilities', params)
 
     def add_comment_to_vulnerability(self, vuln_id, comment, comment_tag_ids=None):
         """
