@@ -1,10 +1,17 @@
 import setuptools
 from distutils.core import setup
 
+# read in the contents of the README file
+from os import path
+this_directory = path.abspath(path.dirname(__file__))
+with open(path.join(this_directory, 'README.rst'), encoding='utf-8') as f:
+    long_description = f.read()
+
 setup(
     name='ThreadFixProAPI',
-    version='1.0.8',
+    version='1.0.9',
     packages=['ThreadFixProApi', '_utils',],
     license='MIT',
-    long_description='A python implementation of ThreadFix\'s API for easier use with python. Built off of original work by (c) 2018 Target Brands, Inc.'
+    long_description=long_description,
+    long_description_content_type='text/x-rst'
 )
