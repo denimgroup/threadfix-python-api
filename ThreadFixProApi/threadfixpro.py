@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-__author__ = "Brandon Spruth (brandon.spruth2@target.com), Jim Nelson (jim.nelson2@target.com),"
+__author__ = "Brandon Spruth (bspruth@gmail.com), Jim Nelson (jim.nelson2@target.com),"
 __copyright__ = "(C) 2018 Target Brands, Inc."
 __contributors__ = ["Brandon Spruth", "Jim Nelson", "Evan Schlesinger"]
 __status__ = "Production"
