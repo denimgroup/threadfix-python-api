@@ -9,7 +9,7 @@ with open(path.join(this_directory, 'README.rst'), encoding='utf-8') as f:
 
 setup(
     name='ThreadFixProAPI',
-    version='1.0.9',
+    version='1.0.10',
     packages=['ThreadFixProApi', '_utils',],
     license='MIT',
     long_description=long_description,

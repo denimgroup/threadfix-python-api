@@ -51,27 +51,27 @@ class TeamsAPI(object):
         :param name: The name of the new team being created
         """
         params = {"name": name}
-        return request('POST', 'rest/teams/new', params, debug=self.debug)
+        return self._request('POST', 'rest/teams/new', params, debug=self.debug)
 
     def get_team_by_id(self, team_id):
         """
         Retrieves team with id of team_id'
         :param team_id: ID of the team being gotten
         """
-        return request('GET', 'rest/teams/' + str(team_id))
+        return self._request('GET', 'rest/teams/' + str(team_id))
 
     def get_team_by_name(self, team_name):
         """
         Retrieves team with name of team_name
         :param team_name: Name of the team being gotten
         """
-        return request('GET', 'rest/teams/lookup?name=' + str(team_name))
+        return self._request('GET', 'rest/teams/lookup?name=' + str(team_name))
 
     def get_all_teams(self):
         """
         Retrieves all the teams.
         """
-        return request('GET', 'rest/teams')
+        return self._request('GET', 'rest/teams')
 
     def update_team(self, team_id, name):
         """
@@ -80,7 +80,7 @@ class TeamsAPI(object):
         :param name: New name to assign to the team
         """
         params = {'name' : name}
-        return request('PUT', 'rest/teams/' + str(team_id) + '/update', params)
+        return self._request('PUT', 'rest/teams/' + str(team_id) + '/update', params)
 
     def get_team_event_history(self, team_id, pages=None, page_size=None):
         """
@@ -94,14 +94,14 @@ class TeamsAPI(object):
             params['page'] = pages
         if page_size:
             params['pageSize'] = page_size
-        return request('POST', 'rest/events/organization/' + str(team_id), params)
+        return self._request('POST', 'rest/events/organization/' + str(team_id), params)
 
     def delete_team(self, team_id):
         """
         Deletes a team by the provided teamId
         :param team_id: Team identifier
         """
-        return request('DELETE', 'rest/teams/' + str(team_id) + '/delete')
+        return self._request('DELETE', 'rest/teams/' + str(team_id) + '/delete')
     
     # Utility
 
