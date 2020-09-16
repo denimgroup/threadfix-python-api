@@ -1,0 +1,12 @@
+python3 setup.py sdist bdist_wheel
+
+python3 -m twine check dist/*
+
+# Then remove any previous file versions from dist/
+
+python3 -m twine upload dist/*
+
+username is __token__
+password is the token
+
+(Token is stored in 1Password)
