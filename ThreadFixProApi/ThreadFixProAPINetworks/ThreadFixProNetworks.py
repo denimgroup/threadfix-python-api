@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-__author__ = "Brandon Spruth (bspruth@gmail.com), Jim Nelson (jim.nelson2@target.com),"
-__copyright__ = "(C) 2018 Target Brands, Inc."
-__contributors__ = ["Brandon Spruth", "Jim Nelson", "Evan Schlesinger"]
+__author__ = "Evan Schlesinger"
+__copyright__ = "(C) 2021 Coalfire"
+__contributors__ = ["Evan Schlesinger"]
 __status__ = "Production"
 __license__ = "MIT"
 
@@ -13,11 +13,10 @@ import urllib3
 import requests.exceptions
 import requests.packages.urllib3
 
-from ThreadFixProApiApplications import ThreadFixProAPIApplications
-from ThreadFixProApiNetworks import ThreadFixProAPINetworks
+from ._utils import *
 
-class ThreadFixProAPI(object):
-    """An API wrapper to facilitate interactions to and from ThreadFix for both Applications and Networks."""
+class ThreadFixProAPINetworks(object):
+    """An API wrapper to facilitate interactions to and from ThreadFix specifically for applications."""
 
     def __init__(self, host, api_key, verify_ssl=True, timeout=30, user_agent=None, cert=None, debug=False):
         """
@@ -31,5 +30,4 @@ class ThreadFixProAPI(object):
         the private key and the certificate) or as a tuple of both file’s path
         :param debug: Prints requests and responses, useful for debugging.
         """
-        self.Applications = ThreadFixProAPIApplications(host, api_key, verify_ssl, timeout, user_agent, cert, debug)
-        self.Networks = ThreadFixProAPINetworks(host, api_key, verify_ssl, timeout, user_agent, cert, debug)
+        pass

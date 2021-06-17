@@ -24,17 +24,17 @@ Example
 ::
 
     # import the package
-    from threadfixproapi import threadfixpro
+    from ThreadFixProApi import ThreadFixProAPI
 
     # setup threadfix connection information
     host = 'https://127.0.0.1:8443/threadfix/'
     api_key = 'your_api_key_from_threadfix_professional'
 
     # initialize threadfix pro api module
-    tfp = threadfixpro.ThreadFixProAPI(host, api_key)
+    tfp = ThreadFixProAPI(host, api_key)
 
     # If you need to disable certificate verification.
-    # tfp = threadfixpro.ThreadFixProAPI(host, api_key, verify_ssl=False)
+    # tfp = ThreadFixProAPI(host, api_key, verify_ssl=False)
 
     # List your threadfix pro teams
     teams = tfp.list_teams()

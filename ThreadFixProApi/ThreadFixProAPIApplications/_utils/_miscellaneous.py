@@ -111,7 +111,7 @@ class MiscellaneousAPI(object):
         :param custom_text: The custom text to display in filed defects
         """
         params = {'customText' : custom_text}
-        return self._request('POST', 'rest/cwe/' + str(cwe_id) + '/setCustomText')
+        return self._request('POST', 'rest/cwe/' + str(cwe_id) + '/setCustomText', params)
 
     def upload_global_fpr_filter_set_override(self, file_path):
         """
