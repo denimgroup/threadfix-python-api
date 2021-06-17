@@ -15,7 +15,9 @@ import requests.packages.urllib3
 
 from ._utils import *
 
-class ThreadFixProAPIApplications(object):
+from ..API import API
+
+class ThreadFixProAPIApplications(API):
     """An API wrapper to facilitate interactions to and from ThreadFix specifically for applications."""
 
     def __init__(self, host, api_key, verify_ssl=True, timeout=30, user_agent=None, cert=None, debug=False):
@@ -30,6 +32,7 @@ class ThreadFixProAPIApplications(object):
         the private key and the certificate) or as a tuple of both file’s path
         :param debug: Prints requests and responses, useful for debugging.
         """
+        super().__init__(host, api_key, verify_ssl, timeout, user_agent, cert, debug)
         self.TeamsAPI = TeamsAPI(host, api_key, verify_ssl, timeout, user_agent, cert, debug)
         self.ApplicationsAPI = ApplicationsAPI(host, api_key, verify_ssl, timeout, user_agent, cert, debug)
         self.DefectTrackersAPI = DefectTrackersAPI(host, api_key, verify_ssl, timeout, user_agent, cert, debug)

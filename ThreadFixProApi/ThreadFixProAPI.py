@@ -13,10 +13,12 @@ import urllib3
 import requests.exceptions
 import requests.packages.urllib3
 
+from .API import API
+
 from .ThreadFixProAPIApplications import ThreadFixProAPIApplications
 from .ThreadFixProAPINetworks import ThreadFixProAPINetworks
 
-class ThreadFixProAPI(object):
+class ThreadFixProAPI(API):
     """An API wrapper to facilitate interactions to and from ThreadFix for both Applications and Networks."""
 
     def __init__(self, host, api_key, verify_ssl=True, timeout=30, user_agent=None, cert=None, debug=False):
@@ -31,5 +33,6 @@ class ThreadFixProAPI(object):
         the private key and the certificate) or as a tuple of both file’s path
         :param debug: Prints requests and responses, useful for debugging.
         """
+        super().__init__(host, api_key, verify_ssl, timeout, user_agent, cert, debug)
         self.Applications = ThreadFixProAPIApplications(host, api_key, verify_ssl, timeout, user_agent, cert, debug)
         self.Networks = ThreadFixProAPINetworks(host, api_key, verify_ssl, timeout, user_agent, cert, debug)

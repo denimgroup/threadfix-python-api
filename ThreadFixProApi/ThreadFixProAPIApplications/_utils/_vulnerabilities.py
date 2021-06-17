@@ -12,11 +12,11 @@ import urllib3
 import requests.exceptions
 import requests.packages.urllib3
 
-from ._utilities import ThreadFixProResponse
+from ...API import API
 
-class VulnerabilitiesAPI(object):
+class VulnerabilitiesAPI(API):
 
-    def __init__(self, host, api_key, verify_ssl=True, timeout=30, user_agent=None, cert=None, debug=False):
+    def __init__(self, host, api_key, verify_ssl, timeout, user_agent, cert, debug):
         """
         Initialize a ThreadFix Pro Vulnerabilities API instance.
         :param host: The URL for the ThreadFix Pro server. (e.g., http://localhost:8080/threadfix/) NOTE: must include http:// TODO: make it so that it is required or implicitly added if forgotten
@@ -28,22 +28,7 @@ class VulnerabilitiesAPI(object):
         the private key and the certificate) or as a tuple of both file’s path
         :param debug: Prints requests and responses, useful for debugging.
         """
-
-        self.host = host
-        self.api_key = api_key
-        self.verify_ssl = verify_ssl
-        self.timeout = timeout
-
-        if not user_agent:
-            self.user_agent = 'threadfix_pro_api/2.7.5' 
-        else:
-            self.user_agent = user_agent
-
-        self.cert = cert
-        self.debug = debug  # Prints request and response information.
-
-        if not self.verify_ssl:
-            urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning) # Disabling SSL warning messages if verification is disabled.
+        super().__init__(host, api_key, verify_ssl, timeout, user_agent, cert, debug)
 
     def vulnerability_search(self, generic_vulnerabilities=None, teams=None, applications=None, channel_types=None, generic_severities=None, number_vulnerabilities=None,
                             page=None, parameter=None, path=None, start_date=None, end_date=None, show_open=None, show_closed=None, show_false_positive=None, 
@@ -221,7 +206,7 @@ class VulnerabilitiesAPI(object):
             params['showSharedVulnFound'] = show_shared_vuln_found
         if show_shared_vuln_not_found:
             params['showSharedVulnNotFound'] = show_shared_vuln_not_found
-        return self._request('POST', 'rest/latest/vulnerabilities', params)
+        return super().request('POST', 'rest/latest/vulnerabilities', params)
 
     def add_comment_to_vulnerability(self, vuln_id, comment, comment_tag_ids=None):
         """
@@ -233,13 +218,13 @@ class VulnerabilitiesAPI(object):
         params = {'comment' : comment}
         if comment_tag_ids:
             params['commentTagIds'] = comment_tag_ids
-        return self._request('POST', 'rest/vulnerabilities/' + str(vuln_id) + '/addComment', params=params)
+        return super().request('POST', 'rest/vulnerabilities/' + str(vuln_id) + '/addComment', params=params)
 
     def list_severities(self):
         """
         Returns a list of severity levels in ThreadFix and their custom names
         """
-        return self._request('GET', 'rest/severities')
+        return super().request('GET', 'rest/severities')
     
     def update_vulnerability_severity(self, vulnerability_id, severity_name):
         """
@@ -247,7 +232,7 @@ class VulnerabilitiesAPI(object):
         :param vulnerability_id: Vulnerability identifier
         :param severity_name: Name of severity that the vulnerability is being changed to
         """
-        return self._request('POST', 'rest/vulnerabilities/' + str(vulnerability_id) + '/severity/' + str(severity_name))
+        return super().request('POST', 'rest/vulnerabilities/' + str(vulnerability_id) + '/severity/' + str(severity_name))
 
     def close_vulnerabilities(self, vulnerability_id):
         """
@@ -255,14 +240,14 @@ class VulnerabilitiesAPI(object):
         :param vulnerability_id: Vulnerabilities' identifiers
         """
         params = {'vulnerabilityIds' : vulnerability_id}
-        return self._request('POST', 'rest/vulnerabilities/close', params)
+        return super().request('POST', 'rest/vulnerabilities/close', params)
         
     def get_document_attached_to_a_vulnerability(self, document_id):
         """
         Displays content of document files
         :param document_id: Document identifier
         """
-        return self._request('GET', 'rest/documents/' + str(document_id) + '/download')
+        return super().request('GET', 'rest/documents/' + str(document_id) + '/download')
 
     def attach_file_to_vulnerability(self, vuln_id, file_path, new_file_name=None):
         """
@@ -275,14 +260,14 @@ class VulnerabilitiesAPI(object):
         if new_file_name:
             params['filename'] = new_file_name
         files = {'file' : open(file_path, 'rb')}
-        return self._request('POST',  'rest/documents/vulnerabilities/' + str(vuln_id) + '/upload', params, files)
+        return super().request('POST',  'rest/documents/vulnerabilities/' + str(vuln_id) + '/upload', params, files)
 
     def mark_vulnerability_as_false_positive(self, vulnerability_id):
         """
         Marks the specified vulnerability as a false positive
         :param vulnerability_id: Vulnerability identifier
         """
-        return self._request('POST', 'rest/vulnerabilities/' + str(vulnerability_id) + '/setFalsePositive')
+        return super().request('POST', 'rest/vulnerabilities/' + str(vulnerability_id) + '/setFalsePositive')
 
     def add_tag_to_vulnerability(self, vulnerability_id, tag_id):
         """
@@ -290,7 +275,7 @@ class VulnerabilitiesAPI(object):
         :param vulnerability_id: Vulnerability identifier
         :param tag_id: Tag identifier
         """
-        return self._request('POST', 'rest/vulnerabilities/' + str(vulnerability_id) + '/tags/' + str(tag_id) + '/add')
+        return super().request('POST', 'rest/vulnerabilities/' + str(vulnerability_id) + '/tags/' + str(tag_id) + '/add')
 
     def remove_tag_to_vulnerability(self, vulnerability_id, tag_id):
         """
@@ -298,42 +283,42 @@ class VulnerabilitiesAPI(object):
         :param vulnerability_id: Vulnerability identifier
         :param tag_id: Tag identifier
         """
-        return self._request('POST', 'rest/vulnerabilities/' + str(vulnerability_id) + '/tags/remove/' + str(tag_id))
+        return super().request('POST', 'rest/vulnerabilities/' + str(vulnerability_id) + '/tags/remove/' + str(tag_id))
 
     def list_vulnerabilities_for_a_tag(self, tag_id):
         """
         Returns a list of all vulnerabilities associated with a tag
         :params tag_id: Tag identifier
         """
-        return self._request('GET', 'rest/tags/' + str(tag_id) + '/listVulnerabilities')
+        return super().request('GET', 'rest/tags/' + str(tag_id) + '/listVulnerabilities')
 
     def mark_vulnerability_as_exploitable(self, vulnerability_id):
         """
         Change the specified vulnerability to exploitable
         :param vulnerability_id: Vulnerability identifer
         """
-        return self._request('POST', 'rest/vulnerabilities/' + str(vulnerability_id) + '/setExploitable')
+        return super().request('POST', 'rest/vulnerabilities/' + str(vulnerability_id) + '/setExploitable')
 
     def mark_vulnerability_as_contested(self, vulnerability_id):
         """
         Change the specified vulnerability to contested
         :param vulnerability_id: Vulnerability identifer
         """
-        return self._request('POST', 'rest/vulnerabilities/' + str(vulnerability_id) + '/setContested')
+        return super().request('POST', 'rest/vulnerabilities/' + str(vulnerability_id) + '/setContested')
 
     def mark_vulnerability_as_verified(self, vulnerability_id):
         """
         Change the specified vulnerability to verified
         :param vulnerability_id: Vulnerability identifer
         """
-        return self._request('POST', 'rest/vulnerabilities/' + str(vulnerability_id) + '/setVerified')
+        return super().request('POST', 'rest/vulnerabilities/' + str(vulnerability_id) + '/setVerified')
 
     def get_defect_details(self, defect_id):
         """
         Returns details about the selected defect
         :param defect_id: Defect identifier
         """
-        return self._request('GET', 'rest/defects/' + str(defect_id))
+        return super().request('GET', 'rest/defects/' + str(defect_id))
     
     def defect_search(self, paging=None, max_results=None, days_old=None, hours_old=None, aging_modifier=None, aging_date_type=None, start_date=None, end_date=None,
                         status_updated_start_date=None, status_updated_end_date=None, defects=None, application_defect_tracker=None, statuses=None, show_active=None,
@@ -393,49 +378,4 @@ class VulnerabilitiesAPI(object):
             params['showOpen'] = show_open
         if show_closed:
             params['showClosed'] = show_closed
-        return self._request('POST', 'rest/defects/search', params)
-
-    # Utility
-
-    def _request(self, method, url, params=None, files=None):
-        """Common handler for all HTTP requests."""
-        if not params:
-            params = {}
-
-        headers = {
-            'Accept': 'application/json',
-            'Authorization': 'APIKEY ' + self.api_key
-        }
-
-        try:
-            if self.debug:
-                print(method + ' ' + self.host + url)
-                print(params)
-
-            response = requests.request(method=method, url=self.host + url, params=params, files=files, headers=headers,
-                                        timeout=self.timeout, verify=self.verify_ssl, cert=self.cert)
-
-            if self.debug:
-                print(response.status_code)
-                print(response.text)
-
-            try:
-                json_response = response.json()
-
-                message = json_response['message']
-                success = json_response['success']
-                response_code = json_response['responseCode']
-                data = json_response['object']
-
-                return ThreadFixProResponse(message=message, success=success, response_code=response_code, data=data)
-            except ValueError:
-                return ThreadFixProResponse(message='JSON response could not be decoded.', success=False)
-        except requests.exceptions.SSLError:
-            return ThreadFixProResponse(message='An SSL error occurred.', success=False)
-        except requests.exceptions.ConnectionError:
-            return ThreadFixProResponse(message='A connection error occurred.', success=False)
-        except requests.exceptions.Timeout:
-            return ThreadFixProResponse(message='The request timed out after ' + str(self.timeout) + ' seconds.',
-                                     success=False)
-        except requests.exceptions.RequestException:
-            return ThreadFixProResponse(message='There was an error while handling the request.', success=False)
+        return super().request('POST', 'rest/defects/search', params)

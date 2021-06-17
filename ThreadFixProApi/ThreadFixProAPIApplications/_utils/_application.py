@@ -8,15 +8,17 @@ __status__ = "Production"
 __license__ = "MIT"
 
 import requests
+
 import urllib3
 import requests.exceptions
 import requests.packages.urllib3
 
-from ._utilities import ThreadFixProResponse
+from ...ThreadFixProResponse import ThreadFixProResponse
+from ...API import API
 
-class ApplicationsAPI(object):
+class ApplicationsAPI(API):
 
-    def __init__(self, host, api_key, verify_ssl=True, timeout=30, user_agent=None, cert=None, debug=False):
+    def __init__(self, host, api_key, verify_ssl, timeout, user_agent, cert, debug):
         """
         Initialize a ThreadFix Pro Applications API instance.
         :param host: The URL for the ThreadFix Pro server. (e.g., http://localhost:8080/threadfix/) NOTE: must include http:// TODO: make it so that it is required or implicitly added if forgotten
@@ -28,22 +30,7 @@ class ApplicationsAPI(object):
         the private key and the certificate) or as a tuple of both file’s path
         :param debug: Prints requests and responses, useful for debugging.
         """
-
-        self.host = host
-        self.api_key = api_key
-        self.verify_ssl = verify_ssl
-        self.timeout = timeout
-
-        if not user_agent:
-            self.user_agent = 'threadfix_pro_api/2.7.5' 
-        else:
-            self.user_agent = user_agent
-
-        self.cert = cert
-        self.debug = debug  # Prints request and response information.
-
-        if not self.verify_ssl:
-            urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning) # Disabling SSL warning messages if verification is disabled.
+        super().__init__(host, api_key, verify_ssl, timeout, user_agent, cert, debug)
 
     def create_application(self, team_id, name, url=None):
         """
@@ -55,14 +42,14 @@ class ApplicationsAPI(object):
         params = {'name': name}
         if url:
             params['url'] = url
-        return self._request('POST', 'rest/teams/' + str(team_id) + '/applications/new', params)
+        return super().request('POST', 'rest/teams/' + str(team_id) + '/applications/new', params)
 
     def get_application_by_id(self, application_id):
         """
         Retrieves an application using the given application id.
         :param application_id: Application identifier.
         """
-        return self._request('GET', 'rest/applications/' + str(application_id))
+        return super().request('GET', 'rest/applications/' + str(application_id))
 
     def get_application_by_name(self, team_name, application_name):
         """
@@ -70,7 +57,7 @@ class ApplicationsAPI(object):
         :param team_name: The name of the team of the application to be retrieved.
         :param application_name: The name of the application to be retrieved.
         """
-        return self._request('GET',
+        return super().request('GET',
                              'rest/applications/' + str(team_name) + '/lookup?name=' + str(application_name))
 
     def get_application_in_team_by_unique_id(self, team_name, unique_id):
@@ -79,7 +66,7 @@ class ApplicationsAPI(object):
         :param team_name: The name of the team of the application to be retrieved.
         :param unique_id: The unique id of the application to be retrieved.
         """
-        return self._request('GET',
+        return super().request('GET',
                              'rest/applications/' + str(team_name) + '/lookup?uniqueId=' + str(unique_id))
 
     def get_application_from_any_team_by_unique_id(self, unique_id):
@@ -87,7 +74,7 @@ class ApplicationsAPI(object):
         Retrieves an application using the applications unique id ignoring team name
         :param unique_id: The unique id of the application to be retrieved.
         """
-        return self._request('GET',
+        return super().request('GET',
                              'rest/applications/allTeamLookup?uniqueId=' + str(unique_id))
 
     def update_application(self, application_id, name=None, url=None, unique_id=None, application_criticality=None, framework_type=None, repository_url=None, repository_type=None, repository_branch=None,
@@ -138,7 +125,7 @@ class ApplicationsAPI(object):
             params['team'] = team
         if skip_application_merge:
             params['skipApplicationMerge'] = skip_application_merge
-        return self._request('PUT', 'rest/applications/' + str(application_id) + '/update', params)
+        return super().request('PUT', 'rest/applications/' + str(application_id) + '/update', params)
 
     def set_application_parameters(self, framework_type, repository_url, application_id):
         """
@@ -148,7 +135,7 @@ class ApplicationsAPI(object):
         :param application_id: Application identifier
         """
         params = {'frameworkType' : framework_type, 'repositoryUrl' : repository_url}
-        return self._request('POST', 'rest/applications/' + str(application_id) + '/setParameters', params)
+        return super().request('POST', 'rest/applications/' + str(application_id) + '/setParameters', params)
 
     def set_application_WAF(self, waf_id, application_id):
         """
@@ -157,7 +144,7 @@ class ApplicationsAPI(object):
         :param application_id: Application identifier
         """
         params = {'wafId' : waf_id}
-        return self._request('POST', 'rest/applications/' + str(application_id) + '/setWaf', params)
+        return super().request('POST', 'rest/applications/' + str(application_id) + '/setWaf', params)
 
     def set_application_URL(self, url, application_id):
         """
@@ -166,7 +153,7 @@ class ApplicationsAPI(object):
         :param application_id: Application identifier
         """
         params = {'url' : url}
-        return self._request('POST', 'rest/applications/' + str(application_id) + '/addUrl', params)
+        return super().request('POST', 'rest/applications/' + str(application_id) + '/addUrl', params)
     
     def add_manual_finding(self,  application_id, vuln_type, long_description, severity, is_static=False, native_id=None, parameter=None, file_path=None, column=None,
                             line_text=None, line_number=None, full_url=None, path=None):
@@ -203,7 +190,7 @@ class ApplicationsAPI(object):
             params['fullUrl'] = full_url
         if path:
             params['path'] = path
-        return self._request('POST', 'rest/applications/' + str(application_id) + 'addFinding', params)
+        return super().request('POST', 'rest/applications/' + str(application_id) + 'addFinding', params)
 
     def create_application_version(self, version_name, version_date, application_id):
         """
@@ -213,7 +200,7 @@ class ApplicationsAPI(object):
         :param application_id: Application identifier
         """
         params = {'versionName' : version_name, 'versionDate' : version_date}
-        return self._request('POST', 'rest/applications/' + str(application_id) + '/version', params)
+        return super().request('POST', 'rest/applications/' + str(application_id) + '/version', params)
 
     def update_application_version(self, application_id, version_id, version_name=None, version_date=None):
         """
@@ -228,7 +215,7 @@ class ApplicationsAPI(object):
             params['versionName'] = version_name
         if version_date:
             params['versionDate'] = version_date
-        return self._request('PUT', 'rest/applications/' + str(application_id) + '/version/' + str(version_id))
+        return super().request('PUT', 'rest/applications/' + str(application_id) + '/version/' + str(version_id))
     
     def delete_application_version(self, application_id, version_id):
         """
@@ -236,7 +223,7 @@ class ApplicationsAPI(object):
         :param application_id: Application identifier
         :param version_id: Version identifier
         """
-        return self._request('DELETE', 'rest/applications/' + str(application_id) + '/version/' + str(version_id))
+        return super().request('DELETE', 'rest/applications/' + str(application_id) + '/version/' + str(version_id))
 
     def attach_file_to_application(self, application_id, file_path, file_name=None,):
         """
@@ -249,14 +236,14 @@ class ApplicationsAPI(object):
         if file_name:
             params['filename'] = file_name
         files={'file': open(file_path, 'rb')}
-        return self._request('POST', 'rest/applications/' + str(application_id) + '/attachFile', params, files)
+        return super().request('POST', 'rest/applications/' + str(application_id) + '/attachFile', params, files)
 
     def delete_applications(self, application_id):
         """
         Deletes an application
         :param application_id: Application identifier
         """
-        return self._request('DELETE', 'rest/applications/' + str(application_id) + '/delete')
+        return super().request('DELETE', 'rest/applications/' + str(application_id) + '/delete')
 
     def create_application_metadata(self, key, title, description, application_id):
         """
@@ -267,7 +254,7 @@ class ApplicationsAPI(object):
         :param application_id: Application identifier
         """
         params = {'key' : key, 'title' : title, 'description' : description}
-        return self._request('POST', 'rest/applications/' + str(application_id) + '/metadata/new', params)
+        return super().request('POST', 'rest/applications/' + str(application_id) + '/metadata/new', params)
 
     def edit_application_metada(self, description, application_id, app_metadata_id):
         """
@@ -277,7 +264,7 @@ class ApplicationsAPI(object):
         :param app_metadata_id: Metadata identifier
         """
         params = {'description' : description}
-        return self._request('POST', 'rest/applications/' + str(application_id) + '/metadata/' + str(app_metadata_id) + '/update')
+        return super().request('POST', 'rest/applications/' + str(application_id) + '/metadata/' + str(app_metadata_id) + '/update')
 
     def delete_application_metadata(self, application_id, app_metadata_id):
         """
@@ -285,7 +272,7 @@ class ApplicationsAPI(object):
         :param application_id: Application identifier
         :param app_metadata_id: Metadata identifier
         """
-        return self._request('DELETE', 'rest/applications/' + str(application_id) + '/metadata/' + str(app_metadata_id) + '/delete')
+        return super().request('DELETE', 'rest/applications/' + str(application_id) + '/metadata/' + str(app_metadata_id) + '/delete')
 
     def get_applications_by_team(self, team_id):
         """
@@ -301,48 +288,3 @@ class ApplicationsAPI(object):
                                      response_code=team_data.response_code, data=new_data)
         else:
             return team_data
-
-    # Utility
-
-    def _request(self, method, url, params=None, files=None):
-        """Common handler for all HTTP requests."""
-        if not params:
-            params = {}
-
-        headers = {
-            'Accept': 'application/json',
-            'Authorization': 'APIKEY ' + self.api_key
-        }
-
-        try:
-            if self.debug:
-                print(method + ' ' + self.host + url)
-                print(params)
-
-            response = requests.request(method=method, url=self.host + url, params=params, files=files, headers=headers,
-                                        timeout=self.timeout, verify=self.verify_ssl, cert=self.cert)
-
-            if self.debug:
-                print(response.status_code)
-                print(response.text)
-
-            try:
-                json_response = response.json()
-
-                message = json_response['message']
-                success = json_response['success']
-                response_code = json_response['responseCode']
-                data = json_response['object']
-
-                return ThreadFixProResponse(message=message, success=success, response_code=response_code, data=data)
-            except ValueError:
-                return ThreadFixProResponse(message='JSON response could not be decoded.', success=False)
-        except requests.exceptions.SSLError:
-            return ThreadFixProResponse(message='An SSL error occurred.', success=False)
-        except requests.exceptions.ConnectionError:
-            return ThreadFixProResponse(message='A connection error occurred.', success=False)
-        except requests.exceptions.Timeout:
-            return ThreadFixProResponse(message='The request timed out after ' + str(self.timeout) + ' seconds.',
-                                     success=False)
-        except requests.exceptions.RequestException:
-            return ThreadFixProResponse(message='There was an error while handling the request.', success=False)

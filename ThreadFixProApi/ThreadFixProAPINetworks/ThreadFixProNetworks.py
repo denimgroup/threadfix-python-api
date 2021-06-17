@@ -15,10 +15,13 @@ import requests.packages.urllib3
 
 from ._utils import *
 
-class ThreadFixProAPINetworks(object):
+from ..API import API
+
+class ThreadFixProAPINetworks(API):
     """An API wrapper to facilitate interactions to and from ThreadFix specifically for applications."""
 
     def __init__(self, host, api_key, verify_ssl=True, timeout=30, user_agent=None, cert=None, debug=False):
+        
         """
         Initialize a ThreadFix Pro API instance.
         :param host: The URL for the ThreadFix Pro server. (e.g., http://localhost:8080/threadfix/) NOTE: must include http:// TODO: make it so that it is required or implicitly added if forgotten
@@ -30,4 +33,5 @@ class ThreadFixProAPINetworks(object):
         the private key and the certificate) or as a tuple of both file’s path
         :param debug: Prints requests and responses, useful for debugging.
         """
+        super().__init__(host, api_key, verify_ssl, timeout, user_agent, cert, debug)        
         pass
