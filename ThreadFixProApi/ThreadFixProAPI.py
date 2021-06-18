@@ -9,8 +9,8 @@ __license__ = "MIT"
 
 from .API import API
 
-from .ThreadFixProAPIApplications import ThreadFixProAPIApplications
-from .ThreadFixProAPINetworks import ThreadFixProAPINetworks
+from .Applications import ThreadFixProAPIApplications
+from .Networks import ThreadFixProAPINetworks
 
 class ThreadFixProAPI(API):
     """An API wrapper to facilitate interactions to and from ThreadFix for both Applications and Networks."""

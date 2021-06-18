@@ -1,8 +1,6 @@
 import os
 import sys
 
-from ThreadFixProAPI import __version__ as version
-
 try:
     from setuptools import setup
 except ImportError:
@@ -23,9 +21,11 @@ if sys.argv[-1] == 'install':
     os.system('python setup.py sdist --formats=zip')
     sys.exit(0)
 
+version = '1.0.11'
+
 setup(
-    name='threadfixproapi',
-    packages=['ThreadFixPythonApi', '_utils',],
+    name='ThreadFixProAPI',
+    packages=['ThreadFixProAPI'],
     version=version,
     description='Python library enumerating the ThreadFix Professional RESTFul API.',
     long_description=long_description,
