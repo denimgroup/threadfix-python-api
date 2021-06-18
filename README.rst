@@ -37,7 +37,7 @@ Example
     # tfp = ThreadFixProAPI(host, api_key, verify_ssl=False)
 
     # List your threadfix pro teams
-    teams = tfp.list_teams()
+    teams = tfp.Applications.TeamsAPI.list_teams()
     if teams.success:
         print("{}".format(teams.data))
 
