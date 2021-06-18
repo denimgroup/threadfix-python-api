@@ -7,11 +7,6 @@ __contributors__ = ["Evan Schlesinger"]
 __status__ = "Production"
 __license__ = "MIT"
 
-import requests
-import urllib3
-import requests.exceptions
-import requests.packages.urllib3
-
 from ...API import API
 
 class RemoteProvidersAPI(API):

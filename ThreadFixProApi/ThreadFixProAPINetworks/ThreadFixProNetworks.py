@@ -7,14 +7,7 @@ __contributors__ = ["Evan Schlesinger"]
 __status__ = "Production"
 __license__ = "MIT"
 
-import json
-import requests
-import urllib3
-import requests.exceptions
-import requests.packages.urllib3
-
 from ._utils import *
-
 from ..API import API
 
 class ThreadFixProAPINetworks(API):
