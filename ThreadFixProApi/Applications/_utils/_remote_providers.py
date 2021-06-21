@@ -35,21 +35,21 @@ class RemoteProvidersAPI(API):
         params = {'applicationId' : application_id}
         if report_url:
             params['reportUrl'] = report_url
-        return super().request('POST', 'rest/remoteprovider/remoteProviderApplication/' + str(remote_provider_application_id) + '/addMapping', params)
+        return super().request('POST', '/remoteprovider/remoteProviderApplication/' + str(remote_provider_application_id) + '/addMapping', params)
 
     def check_remote_provider_application_import_status(self, remote_provider_application_id):
         """
         Returns the status for the Remote Provider Application import
         :param remote_provider_application_id: Remote Provider Application identifier
         """
-        return super().request('GET', 'rest/remoteprovider/remoteProviderApplication/' + str(remote_provider_application_id) + '/status')
+        return super().request('GET', '/remoteprovider/remoteProviderApplication/' + str(remote_provider_application_id) + '/status')
 
     def get_remote_provider_application_versions(self, remote_provider_application_id):
         """
         Returns the status for the Remote Provider Application import
         :param remote_provider_application_id: Remote Provider Application identifier
         """
-        return super().request('GET', 'rest/remoteprovider/remoteProviderApplication/' + str(remote_provider_application_id) + '/versions')
+        return super().request('GET', '/remoteprovider/remoteProviderApplication/' + str(remote_provider_application_id) + '/versions')
 
     def get_remote_provider_applications(self, team_id=None, remote_provider_id=None, application_id=None, hide_mapped=None, hide_unmapped=None):
         """
@@ -71,38 +71,38 @@ class RemoteProvidersAPI(API):
             params['hideMapped'] = hide_mapped
         if hide_unmapped:
             params['hideUnmapped'] = hide_unmapped
-        return super().request('GET', 'rest/remoteprovider/remoteProviderApplication/list', params)
+        return super().request('GET', '/remoteprovider/remoteProviderApplication/list', params)
 
     def get_remote_provider_applications_by_name(self, name, remote_provider_id):
         """
         Gets list of Remote Provider Applications with the provided name
         :param name: Name of the Remote Provider Applications to return
-        :param remote_provider_id: ID of a Remote Provider to restrict the search to
+        :param remote_provider_id: ID of a Remote Provider to rict the search to
         """
         params = {'name' : name}
         if remote_provider_id:
             params['remoteProviderId'] = remote_provider_id
-        return super().request('GET', 'rest/remoteprovider/remoteProviderApplication/search', params)
+        return super().request('GET', '/remoteprovider/remoteProviderApplication/search', params)
 
     def get_remote_providers(self):
         """
         Returns a list of Remote Providers
         """
-        return super().request('GET', 'rest/remoteprovider/list')
+        return super().request('GET', '/remoteprovider/list')
 
     def import_remote_provider_scans(self, remote_provider_application_id):
         """
         Triggers a Remote Provider import for the specified Remote Provider Application
         :param remote_provider_application_id: Remote Provider Application identifier
         """
-        return super().request('POST', 'rest/remoteprovider/remoteProviderApplication/' + str(remote_provider_application_id) + '/import')
+        return super().request('POST', '/remoteprovider/remoteProviderApplication/' + str(remote_provider_application_id) + '/import')
 
     def import_remote_provider_all(self, remote_provider_id):
         """
         Triggers a Remote Provider import for all applications from the specified Remote Provide
         :param remote_provider_id: Remote Provider identifier
         """
-        return super().request('POST', 'rest/remoteprovider/' + str(remote_provider_id) + '/import')
+        return super().request('POST', '/remoteprovider/' + str(remote_provider_id) + '/import')
 
     #Queue Remote Provider Scan has been left out - https://denimgroup.atlassian.net/wiki/spaces/TDOC/pages/22914237/Queue+Remote+Provider+Scan+-+API
 
@@ -111,11 +111,11 @@ class RemoteProvidersAPI(API):
         Removes the ThreadFix application mapping for a Remote Provider application
         :param remote_provider_application_id: Remote Provider Application identifier
         """
-        return super().request('DELETE', 'rest/remoteprovider/remoteProviderApplication/' + str(remote_provider_application_id) + '/removeMapping')
+        return super().request('DELETE', '/remoteprovider/remoteProviderApplication/' + str(remote_provider_application_id) + '/removeMapping')
 
     def sync_remote_provider_applications(self, remote_provider_id):
         """
         Syncs ThreadFix Remote Provider Applications for the specified Remote Provider adding new ones and removing any that are no longer present in the Remote Provide
         :param remote_provider_id: Remote Provider identifier
         """
-        return super().request('POST', 'rest/remoteprovider/' + str(remote_provider_id) + '/sync')
+        return super().request('POST', '/remoteprovider/' + str(remote_provider_id) + '/sync')

@@ -30,14 +30,14 @@ class ScansAPI(API):
         List all scans for a given application
         :param scan_id: Scan identifier.
         """
-        return super().request('GET', 'rest/scans/' + str(scan_id))
+        return super().request('GET', '/scans/' + str(scan_id))
 
     def list_scans(self, application_id):
         """
         List all scans for a given application
         :param application_id: Application identifier.
         """
-        return super().request('GET', 'rest/applications/' + str(application_id) + '/scans')
+        return super().request('GET', '/applications/' + str(application_id) + '/scans')
 
     def upload_scan(self, application_id, file_path):
         """
@@ -46,7 +46,7 @@ class ScansAPI(API):
         :param file_path: Path to the scan file to be uploaded.
         """
         return super().request(
-            'POST', 'rest/applications/' + str(application_id) + '/upload',
+            'POST', '/applications/' + str(application_id) + '/upload',
             files={'file': open(file_path, 'rb')}
         )
     
@@ -58,7 +58,7 @@ class ScansAPI(API):
         :param bulk_upload: Upload files as a single scan (False) or separate scans (True)
         """
         return super().request(
-            'POST', 'rest/applications/' + str(application_id) + '/upload/multi',
+            'POST', '/applications/' + str(application_id) + '/upload/multi',
             files= [{'file' : open(file_path, 'rb')} for file_path in file_paths]
         )
 
@@ -68,7 +68,7 @@ class ScansAPI(API):
         :param application_id: Application identifier
         :param scan_id: Scan identifier
         """
-        return super().request('GET', 'rest/applications/' + str(application_id) + '/pendingScan/' + str(scan_id) + '/status')
+        return super().request('GET', '/applications/' + str(application_id) + '/pendingScan/' + str(scan_id) + '/status')
 
     def download_scan(self, scan_id, filename):
         """
@@ -76,7 +76,7 @@ class ScansAPI(API):
         :param scan_id: Scan identifier
         :param filename: Download location
         """
-        return super().request('GET', 'rest/scans/' + str(scan_id) + '/download',
+        return super().request('GET', '/scans/' + str(scan_id) + '/download',
                              params={'scanFileName': filename})
 
     def delete_scan(self, scan_id):
@@ -84,7 +84,7 @@ class ScansAPI(API):
         Queues the specified scan for deletion
         :param scan_id: Scan identifier
         """
-        return super().request('DELETE', 'rest/scans/' + str(scan_id) + '/delete')
+        return super().request('DELETE', '/scans/' + str(scan_id) + '/delete')
 
     def edit_scan_metadata(self, metadata_key_id, key=None, description=None, title=None):
         """
@@ -101,7 +101,7 @@ class ScansAPI(API):
             params['description'] = description
         if title:
             params['title'] = title
-        return super().request('POST', 'rest/customize/scanmetadata/keys/' + str(metadata_key_id) + '/update', params)
+        return super().request('POST', '/customize/scanmetadata/keys/' + str(metadata_key_id) + '/update', params)
 
     def create_scan_metadata(self, scan_id, key, description, title=None):
         """
@@ -114,7 +114,7 @@ class ScansAPI(API):
         params = {'key' : key, 'description' : description}
         if title:
             params['title'] = title
-        return super().request('POST', 'rest/scans/' + str(scan_id) + '/metadata/new', params)
+        return super().request('POST', '/scans/' + str(scan_id) + '/metadata/new', params)
 
     def delete_scan_metadata(self, scan_id, scan_metadata_key_id):
         """
@@ -122,4 +122,4 @@ class ScansAPI(API):
         :param scan_id: Scan identifier
         :param scan_metadata_key_id: Scan Metadata Key identifier
         """
-        return super().request('POST', 'rest/scans/' + str(scan_id) + '/metadata/' + str(scan_metadata_key_id) + '/delete')
+        return super().request('POST', '/scans/' + str(scan_id) + '/metadata/' + str(scan_metadata_key_id) + '/delete')

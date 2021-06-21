@@ -37,7 +37,7 @@ class CICDAPI(API):
             params['maxAllowed'] = max_allowed
         if max_introduced:
             params['maxIntroduced'] = max_introduced
-        return super().request('POST', 'rest/cicd/passCriteria/create', params)
+        return super().request('POST', '/cicd/passCriteria/create', params)
 
     def update_ci_cd_pass_criteria(self, cicd_id, severity, max_allowed=None, max_introduced=None):
         """
@@ -52,27 +52,27 @@ class CICDAPI(API):
             params['maxAllowed'] = max_allowed
         if max_introduced:
             params['maxIntroduced'] = max_introduced
-        return super().request('POST', 'rest/cicd/passCriteria/' + str(cicd_id) + '/update', params)
+        return super().request('POST', '/cicd/passCriteria/' + str(cicd_id) + '/update', params)
 
     def list_cicd_pass_criteria(self):
         """
         Lists CI/CD pass criteria
         """
-        return super().request('GET', 'rest/cicd/passCriteria')
+        return super().request('GET', '/cicd/passCriteria')
 
     def get_cicd_pass_criteria_details(self, cicd_id):
         """
         Returns detailed information about the specified CI/CD pass criteria
         :param cicd_id: CI/CD identifier
         """
-        return super().request('GET', 'rest/cicd/passCriteria/' + str(cicd_id) + '/detail')
+        return super().request('GET', '/cicd/passCriteria/' + str(cicd_id) + '/detail')
 
     def delete_cicd_pass_criteria(self, cicd_id):
         """
         Deletes the specified CI/CD pass criteria
         :param cicd_id: CI/CD identifier
         """
-        return super().request('DELETE', 'rest/cicd/passCriteria/' + str(cicd_id) + '/delete')
+        return super().request('DELETE', '/cicd/passCriteria/' + str(cicd_id) + '/delete')
 
     def add_application_to_cicd_pass_criteria(self, pass_criteria_id, application_id):
         """
@@ -80,7 +80,7 @@ class CICDAPI(API):
         :param pass_criteria_id: Pass Criteria identifier
         :param application_id: Application identifier
         """
-        return super().request('PUT', 'rest/cicd/passCriteria/' + str(pass_criteria_id) + '/addApplication/' + str(application_id))
+        return super().request('PUT', '/cicd/passCriteria/' + str(pass_criteria_id) + '/addApplication/' + str(application_id))
 
     def remove_application_from_cicd_pass_criteria(self, pass_criteria_id, application_id):
         """
@@ -88,7 +88,7 @@ class CICDAPI(API):
         :param pass_criteria_id: Pass Criteria identifier
         :param application_id: Application identifier
         """
-        return super().request('DELETE', 'rest/cicd/passCriteria/' + str(pass_criteria_id) + '/removeApplication/' + str(application_id))
+        return super().request('DELETE', '/cicd/passCriteria/' + str(pass_criteria_id) + '/removeApplication/' + str(application_id))
 
     def evaluate_cicd_pass_criteria(self, application_id, from_date=None, to_date=None):
         """
@@ -104,7 +104,7 @@ class CICDAPI(API):
             params['fromDate'] = from_date
         if to_date:
             parms['toDate'] = to_date
-        return super().request('GET', 'rest/policy/status/application/' + str(application_id) + '/evaluate', params)
+        return super().request('GET', '/policy/status/application/' + str(application_id) + '/evaluate', params)
 
     def create_cicd_defect_reporter(self, severity, minimum=None, group_by=None):
         """
@@ -118,7 +118,7 @@ class CICDAPI(API):
             params['minimum'] = minimum
         if group_by:
             params['groupBy'] = group_by
-        return super().request('POST', 'rest/cicd/defectReporting/create', params)
+        return super().request('POST', '/cicd/defectReporting/create', params)
 
     def update_cicd_defect_reporter(self, cicd_id, severity, minimum=None, group_by=None):
         """
@@ -133,27 +133,27 @@ class CICDAPI(API):
             params['minimum'] = minimum
         if group_by:
             params['groupBy'] = group_by
-        return super().request('PUT', 'rest/cicd/defectReporting/' + str(cicd_id) + '/update', params)
+        return super().request('PUT', '/cicd/defectReporting/' + str(cicd_id) + '/update', params)
 
     def list_cicd_defect_reporters(self):
         """
         Lists CI/CD defect reporters
         """
-        return super().request('GET', 'rest/cicd/defectReporting')
+        return super().request('GET', '/cicd/defectReporting')
 
     def get_cicd_defect_reporter_details(self, cicd_id):
         """
         Returns CI/CD defect reporter details
         :param cicd_id: CI/CD identifier
         """
-        return super().request('GET', 'rest/cicd/defectReporting/' + str(cicd_id) + '/detail')
+        return super().request('GET', '/cicd/defectReporting/' + str(cicd_id) + '/detail')
 
     def delete_cicd_defect_reporter(self, cicd_id):
         """
         Deletes the CI/CD defect reporter
         :param cicd_id: CI/CD identifier
         """
-        return super().request('DELETE', 'rest/cicd/defectReporting/' + str(cicd_id) + '/delete')
+        return super().request('DELETE', '/cicd/defectReporting/' + str(cicd_id) + '/delete')
 
     def add_application_defect_tracker_to_cicd_defect_reporter(self, defect_reporter_id, app_defect_tracker_id):
         """
@@ -161,7 +161,7 @@ class CICDAPI(API):
         :param defect_reporter_id: Defect Reporter identifier
         :param app_defect_tracker_id: App Defect Tracker identifier
         """
-        return super().request('PUT', 'rest/cicd/defectReporting/' + str(defect_reporter_id) + '/addApplicationDefectTracker/' + str(app_defect_tracker_id))
+        return super().request('PUT', '/cicd/defectReporting/' + str(defect_reporter_id) + '/addApplicationDefectTracker/' + str(app_defect_tracker_id))
 
     def remove_application_defect_tracker_to_cicd_defect_reporter(self, defect_reporter_id, app_defect_tracker_id):
         """
@@ -169,4 +169,4 @@ class CICDAPI(API):
         :param defect_reporter_id: Defect Reporter identifier
         :param app_defect_tracker_id: App Defect Tracker identifier
         """
-        return super().request('PUT', 'rest/cicd/defectReporting/' + str(defect_reporter_id) + '/removeApplicationDefectTracker/' + str(app_defect_tracker_id))
+        return super().request('PUT', '/cicd/defectReporting/' + str(defect_reporter_id) + '/removeApplicationDefectTracker/' + str(app_defect_tracker_id))

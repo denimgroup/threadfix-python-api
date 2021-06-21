@@ -29,7 +29,7 @@ class MiscellaneousAPI(API):
         """
         Clears the Global FPR Filter Set Override.  The file is still available in the Scan Upload Location if you want to reuse it later.
         """
-        return super().request('DELETE', 'rest/defaults/fprfilterset')
+        return super().request('DELETE', '/defaults/fprfilterset')
 
     def configure_email_settings(self, host, port, sender, user, password, tls, smtp_authorization, filters=None):
         """
@@ -46,7 +46,7 @@ class MiscellaneousAPI(API):
         params = {'host' : host, 'port' : port, 'sender' : sender, 'user' : user, 'password' : password, 'tls' : tls, 'smtpAuthorization' : smtp_authorization}
         if filters:
             params['filter'] = filters
-        return super().request('PUT', 'rest/systemsettings/email', params)
+        return super().request('PUT', '/systemsettings/email', params)
 
     def configure_ldap_settings(self, url, search_base, user_dn, password, name, login_filter=None, users_filter=None, groups_filter=None, users_groups_filter=None):
         """
@@ -70,19 +70,19 @@ class MiscellaneousAPI(API):
             params['groupsFilter'] = groups_filter
         if users_groups_filter:
             params['usersGroupsFilter'] = users_groups_filter
-        return super().request('PUT', 'rest/systemsettings/ldap', params)
+        return super().request('PUT', '/systemsettings/ldap', params)
 
     def get_email_confirmation_details(self):
         """
         Returns email configuration fields. Password will always be null
         """
-        return super().request('GET', 'rest/systemsettings/email')
+        return super().request('GET', '/systemsettings/email')
 
     def get_ldap_confirmation_details(self):
         """
         Returns LDAP configuration fields. Password will always be null
         """
-        return super().request('GET', 'rest/systemsettings/ldap')
+        return super().request('GET', '/systemsettings/ldap')
 
     def set_custom_cwe_text(self, cwe_id, custom_text):
         """
@@ -91,7 +91,7 @@ class MiscellaneousAPI(API):
         :param custom_text: The custom text to display in filed defects
         """
         params = {'customText' : custom_text}
-        return super().request('POST', 'rest/cwe/' + str(cwe_id) + '/setCustomText', params)
+        return super().request('POST', '/cwe/' + str(cwe_id) + '/setCustomText', params)
 
     def upload_global_fpr_filter_set_override(self, file_path):
         """
@@ -99,7 +99,7 @@ class MiscellaneousAPI(API):
         :param file_path: Path to scan to upload
         """
         files = {'file' : open(file_path)}
-        return super().request('POST', 'rest/defaults/fprfilterset', files=files)
+        return super().request('POST', '/defaults/fprfilterset', files=files)
 
     def create_metadata_key(self, key, keytype, active=True):
         """
@@ -109,7 +109,7 @@ class MiscellaneousAPI(API):
         :param active: Whether or not the new key is immediately enabled
         """
         params = {'key' : key, 'type' : keytype, 'active' : active}
-        return super().request('POST', 'rest/metadataKeys/new', params)
+        return super().request('POST', '/metadataKeys/new', params)
 
     def create_metadata_key(self, metadata_key_id, key=None, active=None):
         """
@@ -123,7 +123,7 @@ class MiscellaneousAPI(API):
             params['key'] = key
         if active:
             params['active'] = active
-        return super().request('POST', 'rest/metadataKeys/' + str(metadata_key_id) + '/update', params)
+        return super().request('POST', '/metadataKeys/' + str(metadata_key_id) + '/update', params)
 
     def get_metadata_keys(self, keytype=None):
         """
@@ -131,6 +131,6 @@ class MiscellaneousAPI(API):
         :param keytype: Type of Metadata key to return
         """
         if keytype:
-            return super().request('GET', 'rest/metadataKeys?type=' + str(keytype))
+            return super().request('GET', '/metadataKeys?type=' + str(keytype))
         else:
-            return super().request('GET', 'rest/metadataKeys')
+            return super().request('GET', '/metadataKeys')

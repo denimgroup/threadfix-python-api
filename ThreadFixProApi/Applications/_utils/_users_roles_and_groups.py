@@ -33,7 +33,7 @@ class UsersRolesAndGroupsAPI(API):
         :param role_id: Role identifier
         """
         params = {'appId' : app_id, 'roleId' : role_id}
-        return super().request('POST', 'rest/groups/' + str(group_id) + '/role/app', params)
+        return super().request('POST', '/groups/' + str(group_id) + '/role/app', params)
 
     def add_application_role_to_user(self, user_id, app_id, role_id):
         """
@@ -43,7 +43,7 @@ class UsersRolesAndGroupsAPI(API):
         :param role_id: Role identifier
         """
         params = {'appId' : app_id, 'roleId' : role_id}
-        return super().request('POST', 'rest/users/' + str(user_id) + '/role/app', params)
+        return super().request('POST', '/users/' + str(user_id) + '/role/app', params)
 
     def add_team_role_to_group(self, group_id, team_id, role_id):
         """
@@ -53,7 +53,7 @@ class UsersRolesAndGroupsAPI(API):
         :param role_id: Role identifier
         """
         params = {'teamId' : app_id, 'roleId' : role_id}
-        return super().request('POST', 'rest/groups/' + str(group_id) + '/role/team', params)
+        return super().request('POST', '/groups/' + str(group_id) + '/role/team', params)
 
     def add_team_role_to_user(self, user_id, team_id, role_id):
         """
@@ -63,25 +63,25 @@ class UsersRolesAndGroupsAPI(API):
         :param role_id: Role identifier
         """
         params = {'teamId' : app_id, 'roleId' : role_id}
-        return super().request('POST', 'rest/users/' + str(user_id) + '/role/team', params)
+        return super().request('POST', '/users/' + str(user_id) + '/role/team', params)
 
     def get_groups(self):
         """
         Returns a list of groups
         """
-        return super().request('GET', 'rest/groups/list')
+        return super().request('GET', '/groups/list')
 
     def get_roles(self):
         """
         Returns a list of roles
         """
-        return super().request('GET', 'rest/roles/list')
+        return super().request('GET', '/roles/list')
 
     def get_users(self):
         """
         Returns a list of users
         """
-        return super().request('GET', 'rest/users/list')
+        return super().request('GET', '/users/list')
 
     def edit_user(self, user_id, name=None, display_name=None, user_type=None, active_directory_id=None, password=None, confirm_password=None, global_role_id=None):
         """
@@ -110,7 +110,7 @@ class UsersRolesAndGroupsAPI(API):
             params['confirmPassword'] = confirm_password
         if global_role_id:
             params['globalRoleId'] = global_role_id
-        return super().request('POST', 'rest/users/' + str(user_id) + '/update', params)
+        return super().request('POST', '/users/' + str(user_id) + '/update', params)
 
     def remove_application_role_from_group(self, group_id, app_id):
         """
@@ -119,7 +119,7 @@ class UsersRolesAndGroupsAPI(API):
         :param app_id: Application identifier
         """
         params = {'appId' : app_id}
-        return super().request('POST', 'rest/groups/' + str(group_id) + '/role/app/delete', params)
+        return super().request('POST', '/groups/' + str(group_id) + '/role/app/delete', params)
 
     def remove_application_role_from_user(self, user_id, app_id):
         """
@@ -128,7 +128,7 @@ class UsersRolesAndGroupsAPI(API):
         :param app_id: Application identifier
         """
         params = {'appId' : app_id}
-        return super().request('POST', 'rest/users/' + str(user_id) + '/role/app/delete', params)
+        return super().request('POST', '/users/' + str(user_id) + '/role/app/delete', params)
 
     def remove_team_role_from_group(self, group_id, team_id):
         """
@@ -137,7 +137,7 @@ class UsersRolesAndGroupsAPI(API):
         :param team_id: Team identifier
         """
         params = {'teamId' : team_id}
-        return super().request('POST', 'rest/groups/' + str(group_id) + '/role/team/delete', params)
+        return super().request('POST', '/groups/' + str(group_id) + '/role/team/delete', params)
 
     def remove_team_role_from_user(self, user_id, team_id):
         """
@@ -146,7 +146,7 @@ class UsersRolesAndGroupsAPI(API):
         :param team_id: Team identifier
         """
         params = {'teamId' : team_id}
-        return super().request('POST', 'rest/users/' + str(user_id) + '/role/team/delete', params)
+        return super().request('POST', '/users/' + str(user_id) + '/role/team/delete', params)
 
     def create_user(self, name, user_type, display_name=None, active_directory_id=None, password=None, confirm_password=None, global_role_id=None):
         """
@@ -170,14 +170,14 @@ class UsersRolesAndGroupsAPI(API):
             params['confirmPassword'] = confirm_password
         if global_role_id:
             params['globalRoleId'] = global_role_id
-        return super().request('POST', 'rest/users/new', params)
+        return super().request('POST', '/users/new', params)
 
     def delete_user(self, user_id):
         """
         Deletes user from the system
         :param user_id: User identifier
         """
-        return super().request('DELETE', 'rest/users/' + str(user_id) + '/delete')
+        return super().request('DELETE', '/users/' + str(user_id) + '/delete')
 
     def create_group(self, name, active_directory_id=None, global_role_id=None):
         """
@@ -191,7 +191,7 @@ class UsersRolesAndGroupsAPI(API):
             params['activeDirectoryId'] = active_directory_id
         if global_role_id:
             params['globalRoleId'] = global_role_id
-        return super().request('POST', 'rest/groups/new' , params)
+        return super().request('POST', '/groups/new' , params)
 
     def edit_group(self, group_id, name, global_role_id=None):
         """
@@ -203,14 +203,14 @@ class UsersRolesAndGroupsAPI(API):
         params = {'name' : name}
         if global_role_id:
             params['globalRoleId'] = global_role_id
-        return super().request('POST', 'rest/groups/' + str(group_id) + '/update' , params)
+        return super().request('POST', '/groups/' + str(group_id) + '/update' , params)
 
     def delete_group(self, group_id):
         """
         Deletes the specified group from the system
         :param group_id: Group identifier
         """
-        return super().request('DELETE', 'rest/groups/' + str(group_id) + '/delete')
+        return super().request('DELETE', '/groups/' + str(group_id) + '/delete')
 
     def import_ldap_users(self, active_directory_id, import_ldap_groups=None):
         """
@@ -221,7 +221,7 @@ class UsersRolesAndGroupsAPI(API):
         params = {'activeDirectoryId' : active_directory_id}
         if import_ldap_groups:
             params['importLdapGroups'] = import_ldap_groups
-        return super().request('POST', 'rest/users/importLdapUsers', params)
+        return super().request('POST', '/users/importLdapUsers', params)
 
     def prune_ldap_users(self, active_directory_id):
         """
@@ -229,4 +229,4 @@ class UsersRolesAndGroupsAPI(API):
         :param active_directory_id: Active directory from which users are removed
         """
         params = {'activeDirectoryId' : active_directory_id}
-        return super().request('POST', 'rest/users/pruneLdapUsers', params)
+        return super().request('POST', '/users/pruneLdapUsers', params)

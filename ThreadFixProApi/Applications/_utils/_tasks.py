@@ -39,7 +39,7 @@ class TasksAPI(API):
             params['targetURL'] = target_url
         if scan_config_id:
             params['scanConfigId'] = scan_config_id
-        return super().request('POST', 'rest/tasks/queueScan', params)
+        return super().request('POST', '/tasks/queueScan', params)
 
     def set_task_config(self, application_id, scanner_type, file_path):
         """
@@ -50,13 +50,13 @@ class TasksAPI(API):
         """
         params = {'appId' : application_id, 'scannerType' : scanner_type}
         files = {'file' : open(file_path, 'rb')}
-        return super().request('POST', 'rest/tasks/setTaskConfig', params, files)
+        return super().request('POST', '/tasks/setTaskConfig', params, files)
 
     def request_scan_agent_key(self):
         """
         Request a Secure Scan Agent Key.  This key is used to request scan agent tasks and prevent multiple scan agents from interacting with the same task.
         """
-        return super().request('GET', 'rest/tasks/requestScanAgentKey')
+        return super().request('GET', '/tasks/requestScanAgentKey')
 
     def request_task(self, scanners, agent_config_path, scan_agent_secure_key):
         """
@@ -67,7 +67,7 @@ class TasksAPI(API):
         """
         params = {'scanners' : scanners, 'scanAgentSecureKey' : scan_agent_secure_key}
         files = {'files' : open(agent_config_path, 'rb')}
-        return super().request('POST', 'rest/tasks/requestTask', params, files)
+        return super().request('POST', '/tasks/requestTask', params, files)
 
     def update_task_status(self, scan_queue_task_id, message, scan_agent_secure_key, secure_task_key):
         """
@@ -78,7 +78,7 @@ class TasksAPI(API):
         :param secure_task_key: The Secure Task Key that was returned when the Task was assigned from the queue
         """
         params = {'scanQueueTaskId' : scan_queue_task_id,  'message' : message, 'scanAgentSecureKey' : scan_agent_secure_key, 'secureTaskKey' : secure_task_key}
-        return super().request('POST', 'rest/tasks/taskStatusUpdate', params)
+        return super().request('POST', '/tasks/taskStatusUpdate', params)
 
     def complete_task(self, scan_queue_task_id, file_path, scan_agent_secure_key, secure_task_key):
         """
@@ -90,7 +90,7 @@ class TasksAPI(API):
         """
         params = {'scanQueueTaskId' : scan_queue_task_id, 'scanAgentSecureKey' : scan_agent_secure_key, 'secureTaskKey' : secure_task_key}
         files = {'file' : open(file_path, 'rb')}
-        return super().request('POST', 'rest/tasks/completeTask', params, files)
+        return super().request('POST', '/tasks/completeTask', params, files)
 
     def fail_task(self, scan_queue_task_id, message, scan_agent_secure_key, secure_task_key):
         """
@@ -101,10 +101,10 @@ class TasksAPI(API):
         :param secure_task_key: The Secure Task Key that was returned when the Task was assigned from the queue
         """
         params = {'scanQueueTaskId' : scan_queue_task_id,  'message' : message, 'scanAgentSecureKey' : scan_agent_secure_key, 'secureTaskKey' : secure_task_key}
-        return super().request('POST', 'rest/tasks/failTask', params)
+        return super().request('POST', '/tasks/failTask', params)
 
     def get_scan_agent_scanners(self):
         """
         Retrieves the list of scanners that can be configured with the Scan Agent
         """
-        return super().request('GET', 'rest/tasks/scanners')
+        return super().request('GET', '/tasks/scanners')

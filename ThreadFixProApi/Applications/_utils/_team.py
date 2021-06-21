@@ -31,27 +31,27 @@ class TeamsAPI(API):
         :param name: The name of the new team being created
         """
         params = {"name": name}
-        return super().request('POST', 'rest/teams/new', params, debug=self.debug)
+        return super().request('POST', '/teams/new', params, debug=self.debug)
 
     def get_team_by_id(self, team_id):
         """
         Retrieves team with id of team_id'
         :param team_id: ID of the team being gotten
         """
-        return super().request('GET', 'rest/teams/' + str(team_id))
+        return super().request('GET', '/teams/' + str(team_id))
 
     def get_team_by_name(self, team_name):
         """
         Retrieves team with name of team_name
         :param team_name: Name of the team being gotten
         """
-        return super().request('GET', 'rest/teams/lookup?name=' + str(team_name))
+        return super().request('GET', '/teams/lookup?name=' + str(team_name))
 
     def get_all_teams(self):
         """
         Retrieves all the teams.
         """
-        return super().request('GET', 'rest/teams')
+        return super().request('GET', '/teams')
 
     def update_team(self, team_id, name):
         """
@@ -60,7 +60,7 @@ class TeamsAPI(API):
         :param name: New name to assign to the team
         """
         params = {'name' : name}
-        return super().request('PUT', 'rest/teams/' + str(team_id) + '/update', params)
+        return super().request('PUT', '/teams/' + str(team_id) + '/update', params)
 
     def get_team_event_history(self, team_id, pages=None, page_size=None):
         """
@@ -74,11 +74,11 @@ class TeamsAPI(API):
             params['page'] = pages
         if page_size:
             params['pageSize'] = page_size
-        return super().request('POST', 'rest/events/organization/' + str(team_id), params)
+        return super().request('POST', '/events/organization/' + str(team_id), params)
 
     def delete_team(self, team_id):
         """
         Deletes a team by the provided teamId
         :param team_id: Team identifier
         """
-        return super().request('DELETE', 'rest/teams/' + str(team_id) + '/delete')
+        return super().request('DELETE', '/teams/' + str(team_id) + '/delete')

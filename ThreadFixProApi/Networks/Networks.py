@@ -27,4 +27,3 @@ class ThreadFixProAPINetworks(API):
         :param debug: Prints requests and responses, useful for debugging.
         """
         super().__init__(host, api_key, verify_ssl, timeout, user_agent, cert, debug)        
-        pass

@@ -27,13 +27,14 @@ class API(object):
         the private key and the certificate) or as a tuple of both file’s path
         :param debug: Prints requests and responses, useful for debugging.
         """
+        self.api_version = '2.7.5' # Modify this when updating api
         self.host = host
         self.api_key = api_key
         self.verify_ssl = verify_ssl
         self.timeout = timeout
 
         if not user_agent:
-            self.user_agent = 'threadfix_pro_api/2.7.5' 
+            self.user_agent = 'threadfix_pro_api/' + self.api_version 
         else:
             self.user_agent = user_agent
 
@@ -42,6 +43,13 @@ class API(object):
 
         if not self.verify_ssl:
             urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning) # Disabling SSL warning messages if verification is disabled.
+
+        if not str(self.host).startswith('http'): # If they didn't put http or https at the start it will fail the call
+            self.host = 'http://' + self.host # Add only http as safe bet
+        if not str(self.host).endswith('/'): #Ensure it ends with a slash to add the rest
+            self.host = self.host + '/'
+        # Combine host with start of all api strings to make the API URL 
+        self.api_url = self.host + 'rest/v' + self.api_version
 
     def request(self, method, url, params=None, files=None):
         """Common handler for all HTTP requests."""
@@ -55,10 +63,10 @@ class API(object):
 
         try:
             if self.debug:
-                print(method + ' ' + self.host + url)
+                print(method + ' ' + self.api_url + url)
                 print(params)
 
-            response = requests.request(method=method, url=self.host + url, params=params, files=files, headers=headers,
+            response = requests.request(method=method, url=self.api_url + url, params=params, files=files, headers=headers,
                                         timeout=self.timeout, verify=self.verify_ssl, cert=self.cert)
 
             if self.debug:

@@ -29,7 +29,7 @@ class EmailReportingAPI(API):
         """
         Retrives all scheduled email reports
         """
-        return super().request('GET', 'rest/scheduledEmailReport/list')
+        return super().request('GET', '/scheduledEmailReport/list')
 
     def create_scheduled_email_report(self, team_id, severity, frequency, day, hour, minute, period, cron_expression, scheduling_method=None):
         """
@@ -47,7 +47,7 @@ class EmailReportingAPI(API):
         params = {'teamIds' : team_id, 'severity' : severity, 'frequency' : frequency, 'day' : day, 'hour' : hour, 'minute' : minute, 'period' : period, 'cronExpression' : cron_expression}
         if scheduling_method:
             params['schedulingMethod'] = scheduling_method
-        return super().request('POST', 'rest/scheduledEmailReport/add', params)
+        return super().request('POST', '/scheduledEmailReport/add', params)
 
     def create_scheduled_email_report(self, scheduled_email_report_id, team_id, severity, frequency, day, hour, minute, period, cron_expression, scheduling_method=None):
         """
@@ -66,14 +66,14 @@ class EmailReportingAPI(API):
         params = {'teamIds' : team_id, 'severity' : severity, 'frequency' : frequency, 'day' : day, 'hour' : hour, 'minute' : minute, 'period' : period, 'cronExpression' : cron_expression}
         if scheduling_method:
             params['schedulingMethod'] = scheduling_method
-        return super().request('PUT', 'rest/scheduledEmailReport/' + str(scheduled_email_report_id) + '/edit', params)
+        return super().request('PUT', '/scheduledEmailReport/' + str(scheduled_email_report_id) + '/edit', params)
 
     def delete_scheduled_email_report(self, scheduled_email_report_id):
         """
         Deletes a scheduled email report
         :param scheduled_email_report_id: Scheduled Email Report identifier
         """
-        return super().request('DELETE', 'rest/scheduledEmailReport/' + str(scheduled_email_report_id))
+        return super().request('DELETE', '/scheduledEmailReport/' + str(scheduled_email_report_id))
 
     def set_emails_for_scheduled_email_report(self, scheduled_email_report_id, emails=None):
         """
@@ -85,7 +85,7 @@ class EmailReportingAPI(API):
         params = {}
         if emails:
             params['emails'] = emails
-        return super().request('PUT', 'rest/scheduledEmailReport/' + str(scheduled_email_report_id) + '/emails', params)
+        return super().request('PUT', '/scheduledEmailReport/' + str(scheduled_email_report_id) + '/emails', params)
 
     def add_email_list_to_scheduled_email_report(self, scheduled_email_report_id, email_list_id):
         """
@@ -93,7 +93,7 @@ class EmailReportingAPI(API):
         :param scheduled_email_report_id: Scheduled Email Report identifier
         :param email_list_id: Email List identifier
         """
-        return super().request('POST', 'rest/scheduledEmailReport/' + str(scheduled_email_report_id) + '/emailList/' + str(email_list_id))
+        return super().request('POST', '/scheduledEmailReport/' + str(scheduled_email_report_id) + '/emailList/' + str(email_list_id))
 
     def remove_email_list_to_scheduled_email_report(self, scheduled_email_report_id, email_list_id):
         """
@@ -101,10 +101,10 @@ class EmailReportingAPI(API):
         :param scheduled_email_report_id: Scheduled Email Report identifier
         :param email_list_id: Email List identifier
         """
-        return super().request('DELETE', 'rest/scheduledEmailReport/' + str(scheduled_email_report_id) + '/emailList/' + str(email_list_id))
+        return super().request('DELETE', '/scheduledEmailReport/' + str(scheduled_email_report_id) + '/emailList/' + str(email_list_id))
 
     def list_email_lists(self):
         """
         Retrieves all email lists
         """
-        return super().request('GET', 'rest/emailList/list')
+        return super().request('GET', '/emailList/list')

@@ -201,7 +201,7 @@ class VulnerabilitiesAPI(API):
             params['showSharedVulnFound'] = show_shared_vuln_found
         if show_shared_vuln_not_found:
             params['showSharedVulnNotFound'] = show_shared_vuln_not_found
-        return super().request('POST', 'rest/latest/vulnerabilities', params)
+        return super().request('POST', '/latest/vulnerabilities', params)
 
     def add_comment_to_vulnerability(self, vuln_id, comment, comment_tag_ids=None):
         """
@@ -213,13 +213,13 @@ class VulnerabilitiesAPI(API):
         params = {'comment' : comment}
         if comment_tag_ids:
             params['commentTagIds'] = comment_tag_ids
-        return super().request('POST', 'rest/vulnerabilities/' + str(vuln_id) + '/addComment', params=params)
+        return super().request('POST', '/vulnerabilities/' + str(vuln_id) + '/addComment', params=params)
 
     def list_severities(self):
         """
         Returns a list of severity levels in ThreadFix and their custom names
         """
-        return super().request('GET', 'rest/severities')
+        return super().request('GET', '/severities')
     
     def update_vulnerability_severity(self, vulnerability_id, severity_name):
         """
@@ -227,7 +227,7 @@ class VulnerabilitiesAPI(API):
         :param vulnerability_id: Vulnerability identifier
         :param severity_name: Name of severity that the vulnerability is being changed to
         """
-        return super().request('POST', 'rest/vulnerabilities/' + str(vulnerability_id) + '/severity/' + str(severity_name))
+        return super().request('POST', '/vulnerabilities/' + str(vulnerability_id) + '/severity/' + str(severity_name))
 
     def close_vulnerabilities(self, vulnerability_id):
         """
@@ -235,14 +235,14 @@ class VulnerabilitiesAPI(API):
         :param vulnerability_id: Vulnerabilities' identifiers
         """
         params = {'vulnerabilityIds' : vulnerability_id}
-        return super().request('POST', 'rest/vulnerabilities/close', params)
+        return super().request('POST', '/vulnerabilities/close', params)
         
     def get_document_attached_to_a_vulnerability(self, document_id):
         """
         Displays content of document files
         :param document_id: Document identifier
         """
-        return super().request('GET', 'rest/documents/' + str(document_id) + '/download')
+        return super().request('GET', '/documents/' + str(document_id) + '/download')
 
     def attach_file_to_vulnerability(self, vuln_id, file_path, new_file_name=None):
         """
@@ -255,14 +255,14 @@ class VulnerabilitiesAPI(API):
         if new_file_name:
             params['filename'] = new_file_name
         files = {'file' : open(file_path, 'rb')}
-        return super().request('POST',  'rest/documents/vulnerabilities/' + str(vuln_id) + '/upload', params, files)
+        return super().request('POST',  '/documents/vulnerabilities/' + str(vuln_id) + '/upload', params, files)
 
     def mark_vulnerability_as_false_positive(self, vulnerability_id):
         """
         Marks the specified vulnerability as a false positive
         :param vulnerability_id: Vulnerability identifier
         """
-        return super().request('POST', 'rest/vulnerabilities/' + str(vulnerability_id) + '/setFalsePositive')
+        return super().request('POST', '/vulnerabilities/' + str(vulnerability_id) + '/setFalsePositive')
 
     def add_tag_to_vulnerability(self, vulnerability_id, tag_id):
         """
@@ -270,7 +270,7 @@ class VulnerabilitiesAPI(API):
         :param vulnerability_id: Vulnerability identifier
         :param tag_id: Tag identifier
         """
-        return super().request('POST', 'rest/vulnerabilities/' + str(vulnerability_id) + '/tags/' + str(tag_id) + '/add')
+        return super().request('POST', '/vulnerabilities/' + str(vulnerability_id) + '/tags/' + str(tag_id) + '/add')
 
     def remove_tag_to_vulnerability(self, vulnerability_id, tag_id):
         """
@@ -278,42 +278,42 @@ class VulnerabilitiesAPI(API):
         :param vulnerability_id: Vulnerability identifier
         :param tag_id: Tag identifier
         """
-        return super().request('POST', 'rest/vulnerabilities/' + str(vulnerability_id) + '/tags/remove/' + str(tag_id))
+        return super().request('POST', '/vulnerabilities/' + str(vulnerability_id) + '/tags/remove/' + str(tag_id))
 
     def list_vulnerabilities_for_a_tag(self, tag_id):
         """
         Returns a list of all vulnerabilities associated with a tag
         :params tag_id: Tag identifier
         """
-        return super().request('GET', 'rest/tags/' + str(tag_id) + '/listVulnerabilities')
+        return super().request('GET', '/tags/' + str(tag_id) + '/listVulnerabilities')
 
     def mark_vulnerability_as_exploitable(self, vulnerability_id):
         """
         Change the specified vulnerability to exploitable
         :param vulnerability_id: Vulnerability identifer
         """
-        return super().request('POST', 'rest/vulnerabilities/' + str(vulnerability_id) + '/setExploitable')
+        return super().request('POST', '/vulnerabilities/' + str(vulnerability_id) + '/setExploitable')
 
     def mark_vulnerability_as_contested(self, vulnerability_id):
         """
         Change the specified vulnerability to contested
         :param vulnerability_id: Vulnerability identifer
         """
-        return super().request('POST', 'rest/vulnerabilities/' + str(vulnerability_id) + '/setContested')
+        return super().request('POST', '/vulnerabilities/' + str(vulnerability_id) + '/setContested')
 
     def mark_vulnerability_as_verified(self, vulnerability_id):
         """
         Change the specified vulnerability to verified
         :param vulnerability_id: Vulnerability identifer
         """
-        return super().request('POST', 'rest/vulnerabilities/' + str(vulnerability_id) + '/setVerified')
+        return super().request('POST', '/vulnerabilities/' + str(vulnerability_id) + '/setVerified')
 
     def get_defect_details(self, defect_id):
         """
         Returns details about the selected defect
         :param defect_id: Defect identifier
         """
-        return super().request('GET', 'rest/defects/' + str(defect_id))
+        return super().request('GET', '/defects/' + str(defect_id))
     
     def defect_search(self, paging=None, max_results=None, days_old=None, hours_old=None, aging_modifier=None, aging_date_type=None, start_date=None, end_date=None,
                         status_updated_start_date=None, status_updated_end_date=None, defects=None, application_defect_tracker=None, statuses=None, show_active=None,
@@ -373,4 +373,4 @@ class VulnerabilitiesAPI(API):
             params['showOpen'] = show_open
         if show_closed:
             params['showClosed'] = show_closed
-        return super().request('POST', 'rest/defects/search', params)
+        return super().request('POST', '/defects/search', params)

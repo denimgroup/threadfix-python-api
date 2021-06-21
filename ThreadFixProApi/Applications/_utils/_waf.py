@@ -32,27 +32,27 @@ class WafsAPI(API):
         :param WAFtype: Type of WAF you are creating
         """
         params = {'name' : name, 'type' : WAFtype}
-        return super().request('POST', 'rest/wafs/new', params)
+        return super().request('POST', '/wafs/new', params)
 
     def get_waf_by_id(self, waf_id):
         """
         Gets a WAF by the WAFId
         :param waf_id: WAF identifier
         """
-        return super().request('GET', 'rest/wafs/' + str(waf_id))
+        return super().request('GET', '/wafs/' + str(waf_id))
 
     def get_waf_by_name(self, waf_name):
         """
         Gets a WAF by its name
         :param waf_name: The name of the WAF being gotten
         """
-        return super().request('GET', 'rest/wafs/lookup?name=' + str(waf_name))
+        return super().request('GET', '/wafs/lookup?name=' + str(waf_name))
 
     def get_all_wafs(self):
         """
         Gets all WAFs in the system
         """
-        return super().request('GET', 'rest/wafs')
+        return super().request('GET', '/wafs')
 
     def get_waf_rules(self, waf_id, app_id):
         """
@@ -61,7 +61,7 @@ class WafsAPI(API):
         :param waf_id: WAF identifier
         :param app_id: Application identifier
         """
-        return super().request('GET', 'rest/wafs/' + str(waf_id) + '/rules/app/' + str(app_id))
+        return super().request('GET', '/wafs/' + str(waf_id) + '/rules/app/' + str(app_id))
 
     def upload_waf_log(self, waf_id, file_path):
         """
@@ -70,4 +70,4 @@ class WafsAPI(API):
         :param file_path: Path to file to be uploaded
         """
         files = {'file' : open(file_path, 'rb')}
-        return super().request('POST', 'rest/wafs/' + str(waf_id) + '/uploadLog', files=files)
+        return super().request('POST', '/wafs/' + str(waf_id) + '/uploadLog', files=files)

@@ -30,20 +30,20 @@ class PoliciesAPI(API):
         Get details for a policy
         :param policy_id: Policy identifier
         """
-        return super().request('GET', 'rest/policies/' + str(policy_id))
+        return super().request('GET', '/policies/' + str(policy_id))
 
     def get_all_policies(self):
         """
         Get a list of all policies in ThreadFix
         """
-        return super().request('GET', 'rest/policies')
+        return super().request('GET', '/policies')
 
     def get_application_policy_status(self, application_id):
         """
         Get the status for all policies attached to the application with the provided appId
         :param application_id: Application identifier
         """
-        return super().request('GET', 'rest/applications/' + str(application_id) + '/policyStatuses')
+        return super().request('GET', '/applications/' + str(application_id) + '/policyStatuses')
 
     def add_application_to_policy(self, policy_id, application_id):
         """
@@ -51,7 +51,7 @@ class PoliciesAPI(API):
         :param policy_id: Policy identifier
         :param application_id: Application identifier
         """
-        return super().request('POST', 'rest/policies/' + str(policy_id) + '/application/' + str(application_id))
+        return super().request('POST', '/policies/' + str(policy_id) + '/application/' + str(application_id))
 
     def ad_hoc_policy_evaluation(self, application_id, policy_id):
         """
@@ -59,14 +59,14 @@ class PoliciesAPI(API):
         :param application_id: Application identifier
         :param policy_id: Policy identifier
         """
-        return super().request('GET', 'rest/applications/' + str(application_id) + '/policy/eval?policyId=' + str(policy_id))
+        return super().request('GET', '/applications/' + str(application_id) + '/policy/eval?policyId=' + str(policy_id))
 
     def retrieve_all_policies(self, team_id):
         """
         Get details for all policies attached to a team
         :param team_id: Team identifier
         """
-        return super().request('GET', 'rest/policies/team/' + str(team_id))
+        return super().request('GET', '/policies/team/' + str(team_id))
 
     def add_policy_to_team(self, policy_id, team_id):
         """
@@ -74,7 +74,7 @@ class PoliciesAPI(API):
         :param policy_id: Policy identifier
         :param team_id: Team identifier
         """
-        return super().request('POST', 'rest/policies/' + str(policy_id) + '/team/' + str(team_id))
+        return super().request('POST', '/policies/' + str(policy_id) + '/team/' + str(team_id))
 
     def remove_policy_to_team(self, policy_id, team_id):
         """
@@ -82,4 +82,4 @@ class PoliciesAPI(API):
         :param policy_id: Policy identifier
         :param team_id: Team identifier
         """
-        return super().request('DELETE', 'rest/policies/' + str(policy_id) + '/team/' + str(team_id) + '/remove')
+        return super().request('DELETE', '/policies/' + str(policy_id) + '/team/' + str(team_id) + '/remove')

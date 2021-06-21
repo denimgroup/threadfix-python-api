@@ -36,14 +36,14 @@ class ApplicationsAPI(API):
         params = {'name': name}
         if url:
             params['url'] = url
-        return super().request('POST', 'rest/teams/' + str(team_id) + '/applications/new', params)
+        return super().request('POST', '/teams/' + str(team_id) + '/applications/new', params)
 
     def get_application_by_id(self, application_id):
         """
         Retrieves an application using the given application id.
         :param application_id: Application identifier.
         """
-        return super().request('GET', 'rest/applications/' + str(application_id))
+        return super().request('GET', '/applications/' + str(application_id))
 
     def get_application_by_name(self, team_name, application_name):
         """
@@ -52,7 +52,7 @@ class ApplicationsAPI(API):
         :param application_name: The name of the application to be retrieved.
         """
         return super().request('GET',
-                             'rest/applications/' + str(team_name) + '/lookup?name=' + str(application_name))
+                             '/applications/' + str(team_name) + '/lookup?name=' + str(application_name))
 
     def get_application_in_team_by_unique_id(self, team_name, unique_id):
         """
@@ -61,7 +61,7 @@ class ApplicationsAPI(API):
         :param unique_id: The unique id of the application to be retrieved.
         """
         return super().request('GET',
-                             'rest/applications/' + str(team_name) + '/lookup?uniqueId=' + str(unique_id))
+                             '/applications/' + str(team_name) + '/lookup?uniqueId=' + str(unique_id))
 
     def get_application_from_any_team_by_unique_id(self, unique_id):
         """
@@ -69,7 +69,7 @@ class ApplicationsAPI(API):
         :param unique_id: The unique id of the application to be retrieved.
         """
         return super().request('GET',
-                             'rest/applications/allTeamLookup?uniqueId=' + str(unique_id))
+                             '/applications/allTeamLookup?uniqueId=' + str(unique_id))
 
     def update_application(self, application_id, name=None, url=None, unique_id=None, application_criticality=None, framework_type=None, repository_url=None, repository_type=None, repository_branch=None,
                          repository_user_name=None, repository_password=None, repository_folder=None, filter_set=None, team=None, skip_application_merge=None):
@@ -119,7 +119,7 @@ class ApplicationsAPI(API):
             params['team'] = team
         if skip_application_merge:
             params['skipApplicationMerge'] = skip_application_merge
-        return super().request('PUT', 'rest/applications/' + str(application_id) + '/update', params)
+        return super().request('PUT', '/applications/' + str(application_id) + '/update', params)
 
     def set_application_parameters(self, framework_type, repository_url, application_id):
         """
@@ -129,7 +129,7 @@ class ApplicationsAPI(API):
         :param application_id: Application identifier
         """
         params = {'frameworkType' : framework_type, 'repositoryUrl' : repository_url}
-        return super().request('POST', 'rest/applications/' + str(application_id) + '/setParameters', params)
+        return super().request('POST', '/applications/' + str(application_id) + '/setParameters', params)
 
     def set_application_WAF(self, waf_id, application_id):
         """
@@ -138,7 +138,7 @@ class ApplicationsAPI(API):
         :param application_id: Application identifier
         """
         params = {'wafId' : waf_id}
-        return super().request('POST', 'rest/applications/' + str(application_id) + '/setWaf', params)
+        return super().request('POST', '/applications/' + str(application_id) + '/setWaf', params)
 
     def set_application_URL(self, url, application_id):
         """
@@ -147,7 +147,7 @@ class ApplicationsAPI(API):
         :param application_id: Application identifier
         """
         params = {'url' : url}
-        return super().request('POST', 'rest/applications/' + str(application_id) + '/addUrl', params)
+        return super().request('POST', '/applications/' + str(application_id) + '/addUrl', params)
     
     def add_manual_finding(self,  application_id, vuln_type, long_description, severity, is_static=False, native_id=None, parameter=None, file_path=None, column=None,
                             line_text=None, line_number=None, full_url=None, path=None):
@@ -184,7 +184,7 @@ class ApplicationsAPI(API):
             params['fullUrl'] = full_url
         if path:
             params['path'] = path
-        return super().request('POST', 'rest/applications/' + str(application_id) + 'addFinding', params)
+        return super().request('POST', '/applications/' + str(application_id) + 'addFinding', params)
 
     def create_application_version(self, version_name, version_date, application_id):
         """
@@ -194,7 +194,7 @@ class ApplicationsAPI(API):
         :param application_id: Application identifier
         """
         params = {'versionName' : version_name, 'versionDate' : version_date}
-        return super().request('POST', 'rest/applications/' + str(application_id) + '/version', params)
+        return super().request('POST', '/applications/' + str(application_id) + '/version', params)
 
     def update_application_version(self, application_id, version_id, version_name=None, version_date=None):
         """
@@ -209,7 +209,7 @@ class ApplicationsAPI(API):
             params['versionName'] = version_name
         if version_date:
             params['versionDate'] = version_date
-        return super().request('PUT', 'rest/applications/' + str(application_id) + '/version/' + str(version_id))
+        return super().request('PUT', '/applications/' + str(application_id) + '/version/' + str(version_id))
     
     def delete_application_version(self, application_id, version_id):
         """
@@ -217,7 +217,7 @@ class ApplicationsAPI(API):
         :param application_id: Application identifier
         :param version_id: Version identifier
         """
-        return super().request('DELETE', 'rest/applications/' + str(application_id) + '/version/' + str(version_id))
+        return super().request('DELETE', '/applications/' + str(application_id) + '/version/' + str(version_id))
 
     def attach_file_to_application(self, application_id, file_path, file_name=None,):
         """
@@ -230,14 +230,14 @@ class ApplicationsAPI(API):
         if file_name:
             params['filename'] = file_name
         files={'file': open(file_path, 'rb')}
-        return super().request('POST', 'rest/applications/' + str(application_id) + '/attachFile', params, files)
+        return super().request('POST', '/applications/' + str(application_id) + '/attachFile', params, files)
 
     def delete_applications(self, application_id):
         """
         Deletes an application
         :param application_id: Application identifier
         """
-        return super().request('DELETE', 'rest/applications/' + str(application_id) + '/delete')
+        return super().request('DELETE', '/applications/' + str(application_id) + '/delete')
 
     def create_application_metadata(self, key, title, description, application_id):
         """
@@ -248,7 +248,7 @@ class ApplicationsAPI(API):
         :param application_id: Application identifier
         """
         params = {'key' : key, 'title' : title, 'description' : description}
-        return super().request('POST', 'rest/applications/' + str(application_id) + '/metadata/new', params)
+        return super().request('POST', '/applications/' + str(application_id) + '/metadata/new', params)
 
     def edit_application_metada(self, description, application_id, app_metadata_id):
         """
@@ -258,7 +258,7 @@ class ApplicationsAPI(API):
         :param app_metadata_id: Metadata identifier
         """
         params = {'description' : description}
-        return super().request('POST', 'rest/applications/' + str(application_id) + '/metadata/' + str(app_metadata_id) + '/update')
+        return super().request('POST', '/applications/' + str(application_id) + '/metadata/' + str(app_metadata_id) + '/update')
 
     def delete_application_metadata(self, application_id, app_metadata_id):
         """
@@ -266,7 +266,7 @@ class ApplicationsAPI(API):
         :param application_id: Application identifier
         :param app_metadata_id: Metadata identifier
         """
-        return super().request('DELETE', 'rest/applications/' + str(application_id) + '/metadata/' + str(app_metadata_id) + '/delete')
+        return super().request('DELETE', '/applications/' + str(application_id) + '/metadata/' + str(app_metadata_id) + '/delete')
 
     def get_applications_by_team(self, team_id):
         """

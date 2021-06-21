@@ -42,20 +42,20 @@ class DefectTrackersAPI(API):
             params['defaultPassword'] = default_password
         if default_product_name:
             params['defaultProductName'] = default_product_name
-        return super().request('POST', 'rest/defectTrackers/new', params)
+        return super().request('POST', '/defectTrackers/new', params)
 
     def get_defect_tracker_list(self):
         """
         Gets the list of Defect Trackers
         """
-        return super().request('GET', 'rest/defectTrackers/list')
+        return super().request('GET', '/defectTrackers/list')
 
     def get_application_defect_trackers(self, application_id):
         """
         Gets list of the Defect Trackers for an application
         :param application_id: Application identifier
         """
-        return super().request('GET', 'rest/applications/' + str(application_id) + '/appTrackers/listApplicationDefectTrackers')
+        return super().request('GET', '/applications/' + str(application_id) + '/appTrackers/listApplicationDefectTrackers')
 
     def add_defect_tracker_to_application(self, application_id, defect_tracker_id, username, password, project_name, 
                                             use_default_credentials=False, use_default_project=False):
@@ -75,14 +75,14 @@ class DefectTrackersAPI(API):
             params['password'] = password
         if not use_default_project:
             params['projectName'] = project_name
-        return super().request('POST', 'rest/applications/' + str(application_id) + '/appTrackers/addDefectTracker', params)
+        return super().request('POST', '/applications/' + str(application_id) + '/appTrackers/addDefectTracker', params)
 
     def get_defect_tracker_fields(self, application_id):
         """
         Retrieves the fields for the defect tracker attached to the app with the given appId
         :params application_id: Application identifier
         """
-        return super().request('GET', 'rest/defects/' + str(application_id) + '/defectTrackerFields')
+        return super().request('GET', '/defects/' + str(application_id) + '/defectTrackerFields')
 
     def submit_defect(self, application_id, vulnerability_ids, additional_scanner_info=None):
         """
@@ -94,20 +94,20 @@ class DefectTrackersAPI(API):
         params = {'vulnerabilityIds' : vulnerability_ids}
         if additional_scanner_info:
             params['AdditionalScannerInfo'] = additional_scanner_info
-        return super().request('POST', 'rest/defects/' + str(application_id) + '/defectSubmission', params)
+        return super().request('POST', '/defects/' + str(application_id) + '/defectSubmission', params)
 
     def get_defect_tracker_types(self):
         """
         Returns a list of the availble defect tracker types and their IDs
         """
-        return super().request('GET', 'rest/defectTrackers/types')
+        return super().request('GET', '/defectTrackers/types')
 
     def get_defect_tracker_projects(self, defect_tracker_id):
         """
         Get a list of projects for a defect tracker. Only works if it has a default username and password
         :param defect_tracker_id: Defect Tracker identifier
         """
-        return super().request('GET', 'rest/defectTrackers/' + str(defect_tracker_id) + '/projects')
+        return super().request('GET', '/defectTrackers/' + str(defect_tracker_id) + '/projects')
 
     def get_defect_tracker_fields_for_specified_tracker(self, application_id, application_tracker_id):
         """
@@ -115,7 +115,7 @@ class DefectTrackersAPI(API):
         :params application_id: Application identifier
         :params application_tracker_id: Application Tracker identifier
         """
-        return super().request('GET', 'rest/applications/' + str(application_id) + '/appTrackers/' + str(application_tracker_id) + '/defectTrackerFields')
+        return super().request('GET', '/applications/' + str(application_id) + '/appTrackers/' + str(application_tracker_id) + '/defectTrackerFields')
 
     def submit_defect_to_specified_tracker(self, application_id, application_tracker_id, vulnerability_ids, additional_scanner_info=None):
         """
@@ -128,7 +128,7 @@ class DefectTrackersAPI(API):
         params = {'vulnerabilityIds' : vulnerability_ids}
         if additional_scanner_info:
             params['AdditionalScannerInfo'] = additional_scanner_info
-        return super().request('POST', 'rest/applications/' + str(application_id) + '/appTrackers/' + str(application_tracker_id) + '/detectSubmission', params)
+        return super().request('POST', '/applications/' + str(application_id) + '/appTrackers/' + str(application_tracker_id) + '/detectSubmission', params)
 
     def update_defect_tracker(self, defect_tracker_id, default_username, default_password, name=None, url=None):
         """
@@ -144,7 +144,7 @@ class DefectTrackersAPI(API):
             params['name'] = name
         if url:
             params['url'] = url
-        return super().request('PUT', 'rest/defectTrackers/' + str(defect_tracker_id) + '/update', params)
+        return super().request('PUT', '/defectTrackers/' + str(defect_tracker_id) + '/update', params)
 
     def list_defect_tracker_projects(self, defect_tracker_type_id, url, username, password, api_key):
         """
@@ -156,21 +156,21 @@ class DefectTrackersAPI(API):
         :param api_key: The API key used to request Defect Tracker projects
         """
         params = {'defectTrackerTypeId' : defect_tracker_type_id, 'url' : url, 'username' : username, 'password' : password, 'apiKey' : api_key}
-        return super().request('POST', 'rest/defectTrackers/projects', params)
+        return super().request('POST', '/defectTrackers/projects', params)
     
     def delete_defect_trackers(self, defect_tracker_id):
         """
         Deletes a Defect Tracker
         :param defect_tracker_id: Defect Tracker identifier
         """
-        return super().request('DELETE', 'rest/defectTrackers/' + str(defect_tracker_id) + '/update')
+        return super().request('DELETE', '/defectTrackers/' + str(defect_tracker_id) + '/update')
 
     def delete_defect_trackers(self, defect_tracker_profile_id):
         """
         Deletes a Defect Tracker
         :param defect_tracker_profile_id: Defect Tracker profile identifier
         """
-        return super().request('DELETE', 'rest/defectTrackers/profiles/' + str(defect_tracker_profile_id) + '/delete')
+        return super().request('DELETE', '/defectTrackers/profiles/' + str(defect_tracker_profile_id) + '/delete')
 
     def defect_creation_health_check(self):
         """
@@ -178,7 +178,7 @@ class DefectTrackersAPI(API):
         Supports only JIRA and HP Quality Center.
         Requires that Defect Reporter has been set up for at least one application.
         """
-        return super().request('GET', '/rest/defectTrackers/autoDefectCreationHealthCheck')
+        return super().request('GET', '//defectTrackers/autoDefectCreationHealthCheck')
 
     def add_vulnerability_to_existing_defect(self, application_id, tracker_id, vulnerability_ids, defect_id):
         """
@@ -189,7 +189,7 @@ class DefectTrackersAPI(API):
         :param defect_id: The defect ID from the defect tracker application
         """
         params = {'vulnerabilityIds' : vulnerability_ids, 'defectId' : defect_id}
-        return super().request('POST', 'rest/applications/' + str(application_id) + '/appTrackers/' + str(tracker_id) + '/attachToDefect', params)
+        return super().request('POST', '/applications/' + str(application_id) + '/appTrackers/' + str(tracker_id) + '/attachToDefect', params)
 
     def delete_application_defect_trackers(self, application_id, tracker_id):
         """
@@ -197,4 +197,11 @@ class DefectTrackersAPI(API):
         :param application_id: Application identifier
         :param tracker_id: Tracker identifier
         """
-        return super().request('DELETE', 'rest/applications/' + str(application_id) + '/appTrackers/' + str(tracker_id) + '/delete')
+        return super().request('DELETE', '/applications/' + str(application_id) + '/appTrackers/' + str(tracker_id) + '/delete')
+
+    def list_defect_tracker_profiles(self, tracker_id):
+        """
+        Gets all the Defect Profiles attached to the Defect Tracker
+        :param tracker_id: Tracker identifier
+        """
+        return super().request('GET', '/defectTrackers/' + str(tracker_id) + '/profiles')
