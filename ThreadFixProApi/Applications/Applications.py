@@ -40,3 +40,4 @@ class ThreadFixProAPIApplications(API):
         self.UsersRolesAndGroupsAPI = UsersRolesAndGroupsAPI(host, api_key, verify_ssl, timeout, user_agent, cert, debug)
         self.EmailReportingAPI = EmailReportingAPI(host, api_key, verify_ssl, timeout, user_agent, cert, debug)
         self.MiscellaneousAPI = MiscellaneousAPI(host, api_key, verify_ssl, timeout, user_agent, cert, debug)
+        self.SystemCustomizationAPI = SystemCustomizationAPI(host, api_key, verify_ssl, timeout, user_agent, cert, debug)

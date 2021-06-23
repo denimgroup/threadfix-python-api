@@ -119,3 +119,51 @@ class RemoteProvidersAPI(API):
         :param remote_provider_id: Remote Provider identifier
         """
         return super().request('POST', '/remoteprovider/' + str(remote_provider_id) + '/sync')
+
+    def schedule_remote_provider_import(self, scheduling_method, frequency=None, hour=None, minute=None, period=None, day=None, cron_expression=None, remote_provider_id=None, application_id=None, scheduled_timezone=None):
+        """
+        Schedules a remote provider import by either cron expression or date.
+        :param scheduling_method: SELECT or CRON; Method of scheduling the import.
+        :param frequency: DAILY or WEEKLY; Required for SELECT scheduling method
+        :param hour: Hour to schedule import (1-12); required for SELECT
+        :param minute: Minute to schedule import (00-59); required for SELECT
+        :param period: AM or PM; required for SELECT
+        :param day: Day to schedule import (eg. 'Sunday'); required for SELECT and WEEKLY Frequency
+        :param cron_expression: Cron expression string for CRON method
+        :param remote_provider_id: The entity ID of the remote provider to be imported. Leave blank to import all remote providers.
+        :param application_id: ID for the ThreadFix application to map to the Remote Provider application. Leave blank to import for all applications.
+        :param scheduled_timezone: If one is not provided, dafaults to server timezone. Can be used for both CRON and SELECT
+        """
+        params = {'schedulingMethod' : scheduling_method}
+        if frequency:
+            params['frequency'] = frequency
+        if hour:
+            params['hour'] = hour
+        if minute:
+            params['minute'] = minute
+        if period:
+            params['period'] = period
+        if day:
+            params['day'] = day
+        if cron_expression:
+            params['cronExpression'] = cron_expression
+        if remote_provider_id:
+            params['remoteProviderId'] = remote_provider_id
+        if application_id:
+            params['applicationId'] = application_id
+        if scheduled_timezone:
+            params['scheduledTimezone'] = scheduled_timezone
+        return super().request('POST', '/remoteprovider/scheduledImports/add', params)
+
+    def delete_scheduled_remote_provider_import(self, remote_provider_entity_id):
+        """
+        Deletes a scheduled remote provider import.
+        :param remote_provider_entity_id: id of the remote provider scan that is scheduled to be imported
+        """
+        return super().request('DELETE', '/remoteprovider/scheduledImports/' + str(remote_provider_entity_id) + '/delete')
+
+    def list_scheduled_remote_provider_imports(self):
+        """
+        Lists all scheduled remote provider imports.
+        """
+        return super().request('GET', '/remoteprovider/scheduledImports/list')

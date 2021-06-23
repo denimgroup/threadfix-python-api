@@ -25,7 +25,8 @@ class DefectTrackersAPI(API):
         """
         super().__init__(host, api_key, verify_ssl, timeout, user_agent, cert, debug)
 
-    def create_defect_tracker(self, defect_tracker_type_id, name, url, default_username=None, default_password=None, default_product_name=None):
+    def create_defect_tracker(self, defect_tracker_type_id, name, url, default_username=None, default_password=None, 
+                                default_product_name=None, default_rally_workspace=None, tfs_default_collection=None):
         """
         Creates a new defect tracker
         :param defect_tracker_type_id: The type of tracker to configure
@@ -34,6 +35,8 @@ class DefectTrackersAPI(API):
         :param default_username: The default username that can be used when attaching the tracker to an application
         :param default_password: The default password to use with the default username
         :param default_product_name: A default project that can be used when attaching the tracker to an application
+        :param default_rally_workspace: A default workspace that can be used when attaching the tracker to an application. This requires a default username and password to be provided. Only supported by Rally defect tracker.
+        :param tfs_default_collection: A default collection that can be used when attaching the tracker to an application. This requires a default username and password to be provided. Only supported by TFS defect tracker.
         """
         params = {'defectTrackerTypeId' : defect_tracker_type_id, 'name' : name, 'url' : url}
         if default_username:
@@ -42,6 +45,10 @@ class DefectTrackersAPI(API):
             params['defaultPassword'] = default_password
         if default_product_name:
             params['defaultProductName'] = default_product_name
+        if default_rally_workspace:
+            params['defaultRallyWorkspace'] = default_rally_workspace
+        if tfs_default_collection:
+            params['tfsDefaultCollection	'] = tfs_default_collection
         return super().request('POST', '/defectTrackers/new', params)
 
     def get_defect_tracker_list(self):
@@ -57,8 +64,8 @@ class DefectTrackersAPI(API):
         """
         return super().request('GET', '/applications/' + str(application_id) + '/appTrackers/listApplicationDefectTrackers')
 
-    def add_defect_tracker_to_application(self, application_id, defect_tracker_id, username, password, project_name, 
-                                            use_default_credentials=False, use_default_project=False):
+    def add_defect_tracker_to_application(self, application_id, defect_tracker_id, username, password, default_rally_workspace, project_name=None, project_id=None,
+                                            use_default_credentials=False, use_default_project=False, use_default_rally_workspace=None):
         """
         Adds an existing Defect Tracker identified by its id to an application
         :param application_id: Application identifier
@@ -66,15 +73,27 @@ class DefectTrackersAPI(API):
         :param username: Username to access the Defect Tracker
         :param password: Password for the username to access the Defect Tracker
         :param project_name: Name of project the Defect Tracker files defects to
+        :param project_id: Id of the project the Defect Tracker files defects to
         :param use_default_credentials: If the tracker has default credentials set this to true 
         :param use_default project: If the tracker has a default project set this to true 
         """
         params = {'defectTrackerId' : defect_tracker_id}
-        if not use_default_credentials:
+        if use_default_credentials:
+            params['useDefaultCredentials'] = use_default_credentials
+        else:
             params['username'] = username
             params['password'] = password
-        if not use_default_project:
-            params['projectName'] = project_name
+        if use_default_project:
+            params['useDefaultProject'] = use_default_project
+        else:
+            if project_name:
+                params['projectName'] = project_name
+            if project_id:
+                params['projectId'] = project_id
+        if use_default_rally_workspace:
+            params['useDefaultRallyWorkspace'] = use_default_rally_workspace
+        else:
+            params['defaultRallyWorkspace'] = default_rally_workspace
         return super().request('POST', '/applications/' + str(application_id) + '/appTrackers/addDefectTracker', params)
 
     def get_defect_tracker_fields(self, application_id):
@@ -102,12 +121,14 @@ class DefectTrackersAPI(API):
         """
         return super().request('GET', '/defectTrackers/types')
 
-    def get_defect_tracker_projects(self, defect_tracker_id):
+    def get_defect_tracker_projects(self, defect_tracker_id, workspace=None):
         """
         Get a list of projects for a defect tracker. Only works if it has a default username and password
         :param defect_tracker_id: Defect Tracker identifier
+        :param workspace: The name of the workspace containing the projects. Required if using Rally defect tracker.
         """
-        return super().request('GET', '/defectTrackers/' + str(defect_tracker_id) + '/projects')
+        params = {'workspace' : workspace}
+        return super().request('GET', '/defectTrackers/' + str(defect_tracker_id) + '/projects', params)
 
     def get_defect_tracker_fields_for_specified_tracker(self, application_id, application_tracker_id):
         """
@@ -205,3 +226,54 @@ class DefectTrackersAPI(API):
         :param tracker_id: Tracker identifier
         """
         return super().request('GET', '/defectTrackers/' + str(tracker_id) + '/profiles')
+
+    def select_default_defect_profile_for_application_defect_tracker(self, application_id, tracker_id, tracker_profile_id, ignore_profile_check=False):
+        """
+        Selects a Defect Profile to set as the Application Defect Tracker's Default Defect Profile.
+        :param application_id: Application identifier
+        :param tracker_id: Tracker identifier
+        :param tracker_profile_id: The defect tracker profile to set as default
+        :param ignore_profile_check: If set to True, ThreadFix will not perform a validation check efore attaching the profile to the Application Defect Tracker
+        """
+        params = {'ignoreProfileCheck' : ignore_profile_check}
+        return super().request('POST', '/applications/' + str(application_id) + '/appTrackers/' + str(tracker_id) + '/defaultDefectProfile/' + str(tracker_profile_id), params)
+
+    def update_defect_status(self, organization_id, application_id):
+        """
+        Updates defect tracker defect status changes in ThreadFix.
+        :param organization_id: Organization identifier
+        :param application_id: Application identifier
+        """
+        return super().request('GET', '/defects/organizations/' + str(organization_id) + '/applications/' + str(application_id) + '/update')
+
+    def schedule_defect_status_update(self, scheduling_method, frequency=None, hour=None, minute=None, period=None, day=None, cron_expression=None, check_deleted_defects=None, scheduled_timezone=None):
+        """
+        Adds scheduled update job for defect tracker.
+        :param scheduling_method: SELECT or CRON; Method of scheduling the update.
+        :param frequency: DAILY or WEEKLY; Required for SELECT scheduling method
+        :param hour: Hour to schedule update (1-12); required for SELECT
+        :param minute: Minute to schedule update (00-59); required for SELECT
+        :param period: AM or PM; required for SELECT
+        :param day: Day to schedule update (eg. 'Sunday'); required for SELECT and WEEKLY Frequency
+        :param cron_expression: Cron expression string for CRON method
+        :param check_deleted_defects: Looks for deleted defects in the defect tracker and updates their status in ThreadFix to "Issue Not Found".
+        :param scheduled_timezone: If one is not provided, dafaults to server timezone. Can be used for both CRON and SELECT
+        """
+        params = {'schedulingMethod' : scheduling_method}
+        if frequency:
+            params['frequency'] = frequency
+        if hour:
+            params['hour'] = hour
+        if minute:
+            params['minute'] = minute
+        if period:
+            params['period'] = period
+        if day:
+            params['day'] = day
+        if cron_expression:
+            params['cronExpression'] = cron_expression
+        if check_deleted_defects:
+            params['checkDeletedDefects'] = check_deleted_defects
+        if scheduled_timezone:
+            params['scheduledTimezone'] = scheduled_timezone
+        return super().request('POST', '/defectTrackers/scheduledUpdate/addUpdate', params)

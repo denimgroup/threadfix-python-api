@@ -82,3 +82,10 @@ class TeamsAPI(API):
         :param team_id: Team identifier
         """
         return super().request('DELETE', '/teams/' + str(team_id) + '/delete')
+
+    def view_permissible_users_for_team(self, team_id):
+        """
+        Returns a list of users that have access to the given team
+        :param team_id: Team identifier
+        """
+        return super().request('DELETE', '/teams/' + str(team_id) + '/users')

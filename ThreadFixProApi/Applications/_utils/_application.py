@@ -282,3 +282,10 @@ class ApplicationsAPI(API):
                                      response_code=team_data.response_code, data=new_data)
         else:
             return team_data
+
+    def view_permissible_users_for_application(self, application_id):
+        """
+        Returns a list of users that have access to the given application
+        :param application_id: Application identifier
+        """
+        return super().request('GET', '/applications/' + str(application_id) + '/users')

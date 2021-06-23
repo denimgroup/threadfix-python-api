@@ -257,13 +257,6 @@ class VulnerabilitiesAPI(API):
         files = {'file' : open(file_path, 'rb')}
         return super().request('POST',  '/documents/vulnerabilities/' + str(vuln_id) + '/upload', params, files)
 
-    def mark_vulnerability_as_false_positive(self, vulnerability_id):
-        """
-        Marks the specified vulnerability as a false positive
-        :param vulnerability_id: Vulnerability identifier
-        """
-        return super().request('POST', '/vulnerabilities/' + str(vulnerability_id) + '/setFalsePositive')
-
     def add_tag_to_vulnerability(self, vulnerability_id, tag_id):
         """
         Adds specified tag to specified vulnerability
@@ -280,33 +273,42 @@ class VulnerabilitiesAPI(API):
         """
         return super().request('POST', '/vulnerabilities/' + str(vulnerability_id) + '/tags/remove/' + str(tag_id))
 
-    def list_vulnerabilities_for_a_tag(self, tag_id):
+    def list_vulnerabilities_for_a_tag(self, tag_id, page=1, page_size=10000):
         """
         Returns a list of all vulnerabilities associated with a tag
         :params tag_id: Tag identifier
+        :params page: Page of vulnerabilities ot return
+        :params page_size: Number of vulnerabilities to return. Capped at 10000
         """
-        return super().request('GET', '/tags/' + str(tag_id) + '/listVulnerabilities')
+        params = {'page' : page, 'pageSize' : page_size}
+        return super().request('GET', '/tags/' + str(tag_id) + '/listVulnerabilities', params)
 
-    def mark_vulnerability_as_exploitable(self, vulnerability_id):
-        """
-        Change the specified vulnerability to exploitable
-        :param vulnerability_id: Vulnerability identifer
-        """
-        return super().request('POST', '/vulnerabilities/' + str(vulnerability_id) + '/setExploitable')
-
-    def mark_vulnerability_as_contested(self, vulnerability_id):
+    def mark_vulnerability_as_contested(self, vulnerability_id, contested=True):
         """
         Change the specified vulnerability to contested
         :param vulnerability_id: Vulnerability identifer
+        :param contested: Whether to mark the vulnerability as contested (True) or not contested (False)
         """
-        return super().request('POST', '/vulnerabilities/' + str(vulnerability_id) + '/setContested')
+        params = {'vulnerabilityIds' : vulnerability_id, 'contested' : contested}
+        return super().request('POST', '/vulnerabilities/setContested', params)
 
-    def mark_vulnerability_as_verified(self, vulnerability_id):
+    def mark_vulnerability_as_verified(self, vulnerability_id, verified=True):
         """
         Change the specified vulnerability to verified
         :param vulnerability_id: Vulnerability identifer
+        :param verified: Whether to mark the vulnerability as verified (True) or not verified (False)
         """
-        return super().request('POST', '/vulnerabilities/' + str(vulnerability_id) + '/setVerified')
+        params = {'vulnerabilityIds' : vulnerability_id, 'verified' : verified}
+        return super().request('POST', '/vulnerabilities/setVerified', params)
+
+    def mark_vulnerability_as_false_positive(self, vulnerability_id, false_positive=True):
+        """
+        Marks the specified vulnerability as a false positive
+        :param vulnerability_id: Vulnerability identifier
+        :param false_positive: Whether to mark the vulnerability as false_positive (True) or not false_positive (False)
+        """
+        params = {'vulnerabilityIds' : vulnerability_id, 'falsePositive' : false_positive}
+        return super().request('POST', '/vulnerabilities/setFalsePositive', params)
 
     def get_defect_details(self, defect_id):
         """

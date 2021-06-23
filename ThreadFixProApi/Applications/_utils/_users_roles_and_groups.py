@@ -230,3 +230,31 @@ class UsersRolesAndGroupsAPI(API):
         """
         params = {'activeDirectoryId' : active_directory_id}
         return super().request('POST', '/users/pruneLdapUsers', params)
+
+    def add_user_to_group(self, group_id, user_id):
+        """
+        Adds a user to the specified group.
+        :param group_id: Group identifer
+        :param user_id: User identifier to add to group
+        """
+        return super().request('POST', '/groups/' + str(group_id) + '/addUser/' + str(user_id))
+
+    def add_user_to_group(self, group_id, user_id):
+        """
+        Removees a user to the specified group.
+        :param group_id: Group identifer
+        :param user_id: User identifier to add to group
+        """
+        return super().request('POST', '/groups/' + str(group_id) + '/removeUser/' + str(user_id))
+
+    def export_users_audit_csv_report(self):
+        """
+        Returns a CSV report of all users, which includes groups and roles.
+        """
+        return super().request('GET', '/users/export/csv')
+
+    def user_audit(self):
+        """
+        Returns a list of users and associated groups and roles
+        """
+        return super().request('GET', '/users/audit')
