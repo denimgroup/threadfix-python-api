@@ -32,11 +32,15 @@ class PoliciesAPI(API):
         """
         return super().request('GET', '/policies/' + str(policy_id))
 
-    def get_all_policies(self):
+    def get_all_policies(self, type=None):
         """
         Get a list of all policies in ThreadFix
+        :param type: Types of Policies to return.  Leave out or provide "all" to see all policies, provide "filter" to see policies that evaluate on filter criteria, or provide "remediation" to see Time to Remediate policies.
         """
-        return super().request('GET', '/policies')
+        params =  {}
+        if type:
+            params['type'] = type
+        return super().request('GET', '/policies', params)
 
     def get_application_policy_status(self, application_id):
         """

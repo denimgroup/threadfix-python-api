@@ -7,6 +7,7 @@ __contributors__ = ["Evan Schlesinger"]
 __status__ = "Production"
 __license__ = "MIT"
 
+from requests import api
 from ...API import API
 
 class RemoteProvidersAPI(API):
@@ -167,3 +168,26 @@ class RemoteProvidersAPI(API):
         Lists all scheduled remote provider imports.
         """
         return super().request('GET', '/remoteprovider/scheduledImports/list')
+
+    def configure_existing_remote_provider(self, remote_provider_entity_id, url=None, name=None, password=None, apikey=None, secretkey=None):
+        """
+        Updates existing ThreadFix remote provider configuration
+        :param remote_provider_entity_id: id of the remote provider to configure
+        :param url: Updated URL of the remote provider application.
+        :param name: Used if you want to update the name of the remote provider in ThreadFix.
+        :param password: Updated password of the remote provider application.
+        :param apikey: Updated API key of the remote provider application.
+        :param secretkey: Updated secret key value for the remote provider application.
+        """
+        params = {}
+        if url:
+            params['url'] = url
+        if name:
+            params['name'] = name
+        if password:
+            params['password'] = password
+        if apikey:
+            params['ApiKey'] = apikey
+        if secretkey:
+            params['SecretKey'] = secretkey
+        return super().request('POST', '/remoteprovider/' + str(remote_provider_entity_id) + '/configure', params)

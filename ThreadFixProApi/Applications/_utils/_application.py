@@ -7,6 +7,7 @@ __contributors__ = ["Evan Schlesinger"]
 __status__ = "Production"
 __license__ = "MIT"
 
+import warnings
 from ...ThreadFixProResponse import ThreadFixProResponse
 from ...API import API
 
@@ -167,6 +168,7 @@ class ApplicationsAPI(API):
         :param full_url: (Dynamic only) Absolute URL to page with vulnerability
         :param path: (Dynamic only) Relative path to the page with the vulnerability
         """
+        warnings.warn('Deprecated as of version 2.8. Use Pen Test feature instead.')
         params = {'vulnType' : vuln_type, 'long_description' : long_description, 'severity' : severity}
         if native_id:
             params['nativeId'] = native_id
@@ -289,3 +291,12 @@ class ApplicationsAPI(API):
         :param application_id: Application identifier
         """
         return super().request('GET', '/applications/' + str(application_id) + '/users')
+
+    def list_applications(self, team, metadata):
+        """
+        Retrieves a list of all applications, or all applications in for a team.
+        :param team: Only return applications belonging to this team.
+        :param metdata: Filter results by metadata key / value pairs.
+        """
+        params = {'team' : team, 'metadata' : metadata}
+        return super().request('GET', '/applications', params)

@@ -33,7 +33,8 @@ class VulnerabilitiesAPI(API):
                             show_inconsistent_open_defect=None, include_custom_text=None, show_comment_present=None, comment_tags=None, days_old_modifier=None,
                             days_old=None, days_old_comments_modifier=None, days_old_comments=None, hours_old_comments_modifier=None, hours_old_comments=None, 
                             commented_by_user=None, vulnerabilities=None, cves_list=None, export_type=None, tags=None, vuln_tags=None, defect_id=None,
-                            native_id=None, assign_to_user=None, show_shared_vuln_found=None, show_shared_vuln_not_found=None):
+                            native_id=None, assign_to_user=None, show_shared_vuln_found=None, show_shared_vuln_not_found=None, show_dynamic=None, show_static=None, 
+                            show_dependency=None, show_mobile=None, remote_provider_app_name=None):
         """
         Returns a filtered list of vulnerabilities
         :param generic_vulnerabilities: Serialized list of generic vulnerability IDs to narrow results to
@@ -87,6 +88,11 @@ class VulnerabilitiesAPI(API):
         :param assign_to_user: Filters to show vulnerabilities that have a finding with this value in their assignToUser column
         :param show_shared_vuln_found: Filters to show only vulnerabilities that have been identified as Shared Vulnerabilities
         :param show_shared_vuln_not_found: Filters to show only vulnerabilities that have not been identified as Shared Vulnerabilities
+        :param show_dynamic: Filters to show only vulnerabilities with dynamic findings
+        :param show_static: Filters to show only vulnerabilities with static findings
+        :param show_dependency: Filters to show only vulnerabilities with dependency findings
+        :param show_mobile: Filters to show only vulnerabilities with mobile findings
+        :param remote_provider_app_name: Displays the Remote Provider Application name within the Finding Details page
         """
         params = {}
         if generic_vulnerabilities:
@@ -201,7 +207,17 @@ class VulnerabilitiesAPI(API):
             params['showSharedVulnFound'] = show_shared_vuln_found
         if show_shared_vuln_not_found:
             params['showSharedVulnNotFound'] = show_shared_vuln_not_found
-        return super().request('POST', '/latest/vulnerabilities', params)
+        if show_dynamic:
+            params['showDynamic'] = show_dynamic
+        if show_static:
+            params['showStatic'] = show_static
+        if show_dependency:
+            params['showDependency'] = show_dependency
+        if show_mobile:
+            params['showMobile'] = show_mobile
+        if remote_provider_app_name:
+            params['remoteProviderAppNativeName'] = remote_provider_app_name
+        return super().request('POST', '/vulnerabilities', params)
 
     def add_comment_to_vulnerability(self, vuln_id, comment, comment_tag_ids=None):
         """
@@ -376,3 +392,37 @@ class VulnerabilitiesAPI(API):
         if show_closed:
             params['showClosed'] = show_closed
         return super().request('POST', '/defects/search', params)
+
+    def open_or_close_vulnerability(vulnerability_id, open=True):
+        """
+        Update the specified vulnerability's Open/Closed status
+        :param vulnerability_id: Vulnerability to mark as open or closed
+        :param open: Provide 'true' to mark the vulnerability as Open.  Provide 'false' to mark the vulnerability as Closed.
+        """
+        params = {'vulnerabilityIds' : vulnerability_id, 'open' : open}
+        return super().request('POST', '/vulnerabilities/setOpen', params)
+
+    def update_vulnerability_comment(self, vulnerability_id, comment_id, comment=None, comment_tag_ids=None, remove_comment_tags=False, add_comment_tags=False):
+        """
+        Allows update or removal of existing vulnerability comment
+        :param vulnerability_id: Vulnerability identifier
+        :param comment_id: Comment identifier
+        :param comment: The message for the comment
+        :param comment_tag_ids: A comma-separated list of the Ids for any comment tags you want to attach or remove
+        :param remove_comment_tags: Set to "true" to remove comment tag from vulnerability.
+        :param add_comment_tags: Set to "true" to add comment tag to vulnerability
+        """
+        params = {'removeCommentTags' : remove_comment_tags, 'addCommentTags' : add_comment_tags}
+        if comment:
+            params['comment'] = comment
+        if comment_tag_ids:
+            params['commentTagIds'] = comment_tag_ids
+        return super().request('PUT', '/vulnerabilities/' + str(vulnerability_id) + '/vulnComment/' + str(comment_id) + '/update', params)
+
+    def delete_vulnerability_comment(self, vulnerability_id, comment_id):
+        """
+        Deletes a comment from a vulnerability
+        :param vulnerability_id: Vulnerability identifier
+        :param comment_id: Comment identifier
+        """
+        return super().request('DELETE', '/vulnerabilities/' + str(vulnerability_id) + '/vulnComment/' + str(comment_id) + '/delete')

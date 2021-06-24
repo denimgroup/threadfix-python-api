@@ -25,19 +25,24 @@ class ScansAPI(API):
         """
         super().__init__(host, api_key, verify_ssl, timeout, user_agent, cert, debug)
 
-    def get_scan_details(self, scan_id):
+    def get_scan_details(self, scan_id, page, page_size):
         """
         List all scans for a given application
         :param scan_id: Scan identifier.
+        :param page: Which page of findings to retrieve of size "pageSize".  Defaults to 1 if not provided.
+        :param page_size: How many findings to retrieve per "page".  Defaults to 10000 if not provided and cannot be greater than 10000.
         """
-        return super().request('GET', '/scans/' + str(scan_id))
+        params = {'page' : page, 'pageSize' : page_size}
+        return super().request('GET', '/scans/' + str(scan_id), params)
 
-    def list_scans(self, application_id):
+    def list_scans(self, application_id, metadata):
         """
         List all scans for a given application
         :param application_id: Application identifier.
+        :param metadata: Filter results by metadata key / value pairs.
         """
-        return super().request('GET', '/applications/' + str(application_id) + '/scans')
+        params = {'metadata' : metadata}
+        return super().request('GET', '/applications/' + str(application_id) + '/scans', params)
 
     def upload_scan(self, application_id, file_path):
         """

@@ -48,7 +48,7 @@ class DefectTrackersAPI(API):
         if default_rally_workspace:
             params['defaultRallyWorkspace'] = default_rally_workspace
         if tfs_default_collection:
-            params['tfsDefaultCollection	'] = tfs_default_collection
+            params['tfsDefaultCollection'] = tfs_default_collection
         return super().request('POST', '/defectTrackers/new', params)
 
     def get_defect_tracker_list(self):
