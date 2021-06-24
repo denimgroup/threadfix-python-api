@@ -128,3 +128,10 @@ class ScansAPI(API):
         :param scan_metadata_key_id: Scan Metadata Key identifier
         """
         return super().request('POST', '/scans/' + str(scan_id) + '/metadata/' + str(scan_metadata_key_id) + '/delete')
+
+    def download_threadfix_scan_file(self, scan_id):
+        """
+        Outputs the .threadfix scan file associated with the given Scan ID. 
+        :param scan_id: ID of the scan to download
+        """
+        return super().request('GET', '/scans/' + str(scan_id) + '/download/threadfix')

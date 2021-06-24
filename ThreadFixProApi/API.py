@@ -27,7 +27,7 @@ class API(object):
         the private key and the certificate) or as a tuple of both file’s path
         :param debug: Prints requests and responses, useful for debugging.
         """
-        self.api_version = '2.8.2' # Modify this when updating api
+        self.api_version = '2.8.3' # Modify this when updating api
         self.host = host
         self.api_key = api_key
         self.verify_ssl = verify_ssl

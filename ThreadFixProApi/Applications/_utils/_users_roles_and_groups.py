@@ -258,3 +258,21 @@ class UsersRolesAndGroupsAPI(API):
         Returns a list of users and associated groups and roles
         """
         return super().request('GET', '/users/audit')
+
+    def get_login_history_for_all_users(self, page=10, number_to_show=20):
+        """
+        Returns login history of all users
+        :param page: Number of events to return. By default this method will return up to 10 events.
+        :param number_to_show: 	Can be used to return a different page of events, with each page of events containing {numberToShow} events. * If not specified, the default limit is 20
+        """
+        params = {'page' : page, 'numberToShow' : number_to_show}
+        return super().request('POST', '/history/userLogins', params)
+
+    def get_event_history_for_all_users(self, page=10, number_to_show=20):
+        """
+        Returns global event history of all users
+        :param page: Number of events to return. By default this method will return up to 10 events.
+        :param number_to_show: 	Can be used to return a different page of events, with each page of events containing {numberToShow} events. * If not specified, the default limit is 20
+        """
+        params = {'page' : page, 'numberToShow' : number_to_show}
+        return super().request('POST', '/history/history/objects', params)

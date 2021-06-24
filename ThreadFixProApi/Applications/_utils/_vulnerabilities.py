@@ -426,3 +426,13 @@ class VulnerabilitiesAPI(API):
         :param comment_id: Comment identifier
         """
         return super().request('DELETE', '/vulnerabilities/' + str(vulnerability_id) + '/vulnComment/' + str(comment_id) + '/delete')
+
+    def get_event_history_for_vulnerability(self, vulnerability_id, page=10, number_to_show=20):
+        """
+        Returns a list of history events for a given vulnerability.
+        :param vulnerability_id: ID of vulnerability to get history of
+        :param page: Number of events to return. By default this method will return up to 10 events.
+        :param number_to_show: 	Can be used to return a different page of events, with each page of events containing {numberToShow} events. * If not specified, the default limit is 20
+        """
+        params = {'page' : page, 'numberToShow' : number_to_show}
+        return super().request('POST', '/history/vulnerabilities/' + str(vulnerability_id) + '/history/objects', params)

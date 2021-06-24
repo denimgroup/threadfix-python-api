@@ -194,29 +194,33 @@ class ApplicationsAPI(API):
             params['path'] = path
         return super().request('POST', '/applications/' + str(application_id) + 'addFinding', params)
 
-    def create_application_version(self, version_name, version_date, application_id):
+    def create_application_version(self, version_name, version_date, application_id, version_timezone):
         """
         Creates an application version
         :param version_name: Name of the version of the application
         :param version_date: Date of the version of the application
         :param application_id: Application identifier
+        :param version_timezone: Timezone for version creation.
         """
-        params = {'versionName' : version_name, 'versionDate' : version_date}
+        params = {'versionName' : version_name, 'versionDate' : version_date, 'versionTimezone' : version_timezone}
         return super().request('POST', '/applications/' + str(application_id) + '/version', params)
 
-    def update_application_version(self, application_id, version_id, version_name=None, version_date=None):
+    def update_application_version(self, application_id, version_id, version_name=None, version_date=None, version_timezone=None):
         """
         Updates the version data for an application
         :param application_id: Application identifier
         :param version_id: Version identifier
         :param version_name: New name for version
         :param version_date: New date for version
+        :param version_timezone: Timezone for version creation.
         """
         params = {}
         if version_name:
             params['versionName'] = version_name
         if version_date:
             params['versionDate'] = version_date
+        if version_timezone:
+            params['versionTimezone'] = version_timezone
         return super().request('PUT', '/applications/' + str(application_id) + '/version/' + str(version_id))
     
     def delete_application_version(self, application_id, version_id):
@@ -306,3 +310,14 @@ class ApplicationsAPI(API):
         """
         params = {'team' : team, 'metadata' : metadata}
         return super().request('GET', '/applications', params)
+
+    def get_event_history_for_application(self, team_id, application_id, page=10, number_to_show=20):
+        """
+        Lists event history for a given application.
+        :param team_id: ID of team application belongs to
+        :param application_id: ID of application to get history from
+        :param page: Number of events to return. By default this method will return up to 10 events.
+        :param number_to_show: 	Can be used to return a different page of events, with each page of events containing {numberToShow} events. * If not specified, the default limit is 20
+        """
+        params = {'page' : page, 'numberToShow' : number_to_show}
+        return super().request('POST', '/history/teams/' + str(team_id) + '/applications/' + str(application_id) + '/history/objects', params)

@@ -47,11 +47,14 @@ class TeamsAPI(API):
         """
         return super().request('GET', '/teams/lookup?name=' + str(team_name))
 
-    def get_all_teams(self):
+    def get_all_teams(self, page=1, page_size=10000):
         """
         Retrieves all the teams.
+        :param page: Which page of findings to retrieve of size "pageSize"
+        :param page_size: How many findings to retrieve per "page"
         """
-        return super().request('GET', '/teams')
+        params = {'page' : page, 'pageSize' : page_size}
+        return super().request('GET', '/teams', params)
 
     def update_team(self, team_id, name):
         """
@@ -89,3 +92,13 @@ class TeamsAPI(API):
         :param team_id: Team identifier
         """
         return super().request('DELETE', '/teams/' + str(team_id) + '/users')
+
+    def get_event_history_for_team(self, team_id, page=10, number_to_show=20):
+        """
+        Returns list of events for a particular team
+        :param team_id: ID of team to get history from
+        :param page: Number of events to return. By default this method will return up to 10 events.
+        :param number_to_show: 	Can be used to return a different page of events, with each page of events containing {numberToShow} events. * If not specified, the default limit is 20
+        """
+        params = {'page' : page, 'numberToShow' : number_to_show}
+        return super().request('POST', '/history/teams/' + str(team_id) + '/history/objects', params)
