@@ -38,7 +38,7 @@ class CICDAPI(API):
         if from_date:
             params['fromDate'] = from_date
         if to_date:
-            parms['toDate'] = to_date
+            params['toDate'] = to_date
         return super().request('GET', '/policy/status/application/' + str(application_id) + '/evaluate', params)
 
     def create_cicd_defect_reporter(self, severity, minimum=None, group_by=None):

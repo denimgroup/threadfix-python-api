@@ -27,16 +27,19 @@ class ApplicationsAPI(API):
         """
         super().__init__(host, api_key, verify_ssl, timeout, user_agent, cert, debug)
 
-    def create_application(self, team_id, name, url=None):
+    def create_application(self, team_id, name, url=None, description=None):
         """
         Creates an application under a given team.
         :param team_id: Team identifier.
         :param name: The name of the new application being created.
         :param url: The url of where the application is located.
+        :param description: The text to be included in the description field for the application.
         """
         params = {'name': name}
         if url:
             params['url'] = url
+        if description:
+            params['description'] = description
         return super().request('POST', '/teams/' + str(team_id) + '/applications/new', params)
 
     def get_application_by_id(self, application_id):
@@ -73,7 +76,7 @@ class ApplicationsAPI(API):
                              '/applications/allTeamLookup?uniqueId=' + str(unique_id))
 
     def update_application(self, application_id, name=None, url=None, unique_id=None, application_criticality=None, framework_type=None, repository_url=None, repository_type=None, repository_branch=None,
-                         repository_user_name=None, repository_password=None, repository_folder=None, filter_set=None, team=None, skip_application_merge=None):
+                         repository_user_name=None, repository_password=None, repository_folder=None, filter_set=None, team=None, skip_application_merge=None, description=None):
         """
         Updates the information of an application. Needs atleast one parameter to work
         :param application_id: Application identifier
@@ -90,6 +93,7 @@ class ApplicationsAPI(API):
         :param filter_set: New filter set for application
         :param team: New team for application
         :param skip_application_merge: Whether or not to merge the application
+        :param description: The text to be included in the description field for the application.
         """
         params = {}
         if name:
@@ -120,6 +124,8 @@ class ApplicationsAPI(API):
             params['team'] = team
         if skip_application_merge:
             params['skipApplicationMerge'] = skip_application_merge
+        if description:
+            params['description'] = description
         return super().request('PUT', '/applications/' + str(application_id) + '/update', params)
 
     def set_application_parameters(self, framework_type, repository_url, application_id):
