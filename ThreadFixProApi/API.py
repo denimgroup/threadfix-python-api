@@ -18,7 +18,7 @@ class API(object):
     def __init__(self, host, api_key, verify_ssl, timeout, user_agent, cert, debug):
         """
         Initialize a ThreadFix Pro API instance.
-        :param host: The URL for the ThreadFix Pro server. (e.g., http://localhost:8080/threadfix/) NOTE: must include http:// TODO: make it so that it is required or implicitly added if forgotten
+        :param host: The URL for the ThreadFix Pro server. (e.g., http://localhost:8080/threadfix/) NOTE: must include http://
         :param api_key: The API key generated on the ThreadFix Pro API Key page.
         :param verify_ssl: Specify if API requests will verify the host's SSL certificate, defaults to true.
         :param timeout: HTTP timeout in seconds, default is 30.

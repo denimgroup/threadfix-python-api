@@ -25,7 +25,7 @@ version = '1.0.11'
 
 setup(
     name='ThreadFixProAPI',
-    packages=['ThreadFixProAPI'],
+    packages=['ThreadFixProAPI', 'ThreadFixProAPI.Applications', 'ThreadFixProAPI.Applications._utils', 'ThreadFixProAPI.Networks', 'ThreadFixProAPI.Networks._utils'],
     version=version,
     description='Python library enumerating the ThreadFix Professional RESTFul API.',
     long_description=long_description,
