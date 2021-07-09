@@ -46,10 +46,12 @@ class API(object):
 
         if not str(self.host).startswith('http'): # If they didn't put http or https at the start it will fail the call
             self.host = 'http://' + self.host # Add only http as safe bet
-        if not str(self.host).endswith('/'): #Ensure it ends with a slash to add the rest
-            self.host = self.host + '/'
-        # Combine host with start of all api strings to make the API URL 
-        self.api_url = self.host + 'rest/v' + self.api_version
+        if str(self.host).endswith('/'): # Ensure it doesn't end with with a slash
+            self.host = self.host[:-1]
+       
+    def add_versioning(self):
+        # Combine host with start of all versioned calls (application only atm) to make sure they are called in the most recent version
+        self.host = self.host + '/rest/v' + self.api_version
 
     def request(self, method, url, params=None, files=None):
         """Common handler for all HTTP requests."""
@@ -63,10 +65,10 @@ class API(object):
 
         try:
             if self.debug:
-                print(method + ' ' + self.api_url + url)
+                print(method + ' ' + self.host + url)
                 print(params)
 
-            response = requests.request(method=method, url=self.api_url + url, params=params, files=files, headers=headers,
+            response = requests.request(method=method, url=self.host + url, params=params, files=files, headers=headers,
                                         timeout=self.timeout, verify=self.verify_ssl, cert=self.cert)
 
             if self.debug:

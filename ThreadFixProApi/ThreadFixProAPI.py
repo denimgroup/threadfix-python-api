@@ -18,7 +18,7 @@ class ThreadFixProAPI(API):
     def __init__(self, host, api_key, verify_ssl=True, timeout=30, user_agent=None, cert=None, debug=False):
         """
         Initialize a ThreadFix Pro API instance.
-        :param host: The URL for the ThreadFix Pro server. (e.g., http://localhost:8080/threadfix/) NOTE: must include http:// TODO: make it so that it is required or implicitly added if forgotten
+        :param host: The URL for the ThreadFix Pro server. (e.g., http://localhost:8080/threadfix) NOTE: must include http:// TODO: make it so that it is required or implicitly added if forgotten
         :param api_key: The API key generated on the ThreadFix Pro API Key page.
         :param verify_ssl: Specify if API requests will verify the host's SSL certificate, defaults to true.
         :param timeout: HTTP timeout in seconds, default is 30.
@@ -28,5 +28,6 @@ class ThreadFixProAPI(API):
         :param debug: Prints requests and responses, useful for debugging.
         """
         super().__init__(host, api_key, verify_ssl, timeout, user_agent, cert, debug)
-        self.Applications = ThreadFixProAPIApplications(host, api_key, verify_ssl, timeout, user_agent, cert, debug)
-        self.Networks = ThreadFixProAPINetworks(host, api_key, verify_ssl, timeout, user_agent, cert, debug)
+        # Add on threadfix to application calls to make sure it can still work in a unified system as application endpoints are on /threadfix/{endpoint}
+        self.Applications = ThreadFixProAPIApplications(self.host + '/threadfix', api_key, verify_ssl, timeout, self.user_agent, cert, debug)
+        self.Networks = ThreadFixProAPINetworks(self.host, api_key, verify_ssl, timeout, self.user_agent, cert, debug)
