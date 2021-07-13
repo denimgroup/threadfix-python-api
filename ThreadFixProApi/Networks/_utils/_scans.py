@@ -30,6 +30,8 @@ class ScansAPI(API):
         :param page: The page of the scans to get (optional if you have href)
         :param limit: The amount of scans per page
         :param href: The link to the next page in the system from a previous call
+        :param scan_status_enum: Filters based on the scans status value. Enum takes numeric values from 1-12
+        :param scan_date: Fetch scans that occurred on this date
         """
         params = {}
         if scan_status_enum:

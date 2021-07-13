@@ -22,3 +22,23 @@ class FindingsAPI(API):
         :param debug: Prints requests and responses, useful for debugging.
         """
         super().__init__(host, api_key, verify_ssl, timeout, headers, user_agent, cert, debug)
+
+    def fetch_all_findings(self, page=1, limit=50, href=None):
+        """
+        Fetches all findings one page at a time of limit 
+        :param page: The page of the findings to get (optional if you have href)
+        :param limit: The amount of findings per page
+        :param href: The link to the next page in the system from a previous call
+        """
+        # If href (calling another page gives an href tag for next page in line)
+        if href:
+            return super().request('GET', '/api/network' + href)
+        # First call
+        return super().request('GET', f'/api/network/findings?_page={page}&_limit={limit}')
+
+    def find_finding_by_id(self, finding_id):
+        """
+        Gets a finding by its id
+        :param finding_id: ID of the finding to get
+        """
+        return super().request('GET', f'/api/network/findings/{finding_id}')
