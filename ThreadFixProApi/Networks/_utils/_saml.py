@@ -22,3 +22,21 @@ class SamlAPI(API):
         :param debug: Prints requests and responses, useful for debugging.
         """
         super().__init__(host, api_key, verify_ssl, timeout, headers, user_agent, cert, debug)
+
+    def check_saml_enabled(self):
+        """
+        Checks if SAML is enabled in ThreadFix
+        """
+        return super().request('GET', '/saml/enabled')
+
+    def get_identity_provider_for_single_sign_on(self):
+        """
+        Returns the identity provier URL for ThreadFix
+        """
+        return super().request('GET', '/saml/idp-sso')
+
+    def get_saml_metadata(self):
+        """
+        Gets the SAML Metadata for ThreadFix
+        """
+        return super().request('GET', '/saml/metadata')
