@@ -22,3 +22,15 @@ class SessionsAPI(API):
         :param debug: Prints requests and responses, useful for debugging.
         """
         super().__init__(host, api_key, verify_ssl, timeout, headers, user_agent, cert, debug)
+
+    def logout(self):
+        """
+        Destroys the current cookie and session the Network API is running on (would need to make a new API instance to use it)
+        """
+        return super().request('POST', '/auth/logout')
+
+    def get_identity_providers(self):
+        """
+        Gets a list of identity providers
+        """
+        return super().request('GET', '/auth/idp')
