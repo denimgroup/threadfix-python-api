@@ -25,7 +25,7 @@ class VulnerabilitiesAPI(API):
 
     def fetch_all_vulnerabilities(self, page=1, limit=50, href=None):
         """
-        Fetches all vulnerabilities one page at a time of limit vulnerabilities
+        Fetches all vulnerabilities one page at a time of limit 
         :param page: The page of the vulnerability to get (optional if you have href)
         :param limit: The amount of vulnerabilities per page
         :param href: The link to the next page in the system from a previous call
@@ -41,4 +41,4 @@ class VulnerabilitiesAPI(API):
         Gets a vulnerability by its id
         :param vuln_id: ID of the vulnerability to get
         """
-        return super().request('GET', f'https://localhost/api/network/vulnerabilities/{vuln_id}')
+        return super().request('GET', f'/api/network/vulnerabilities/{vuln_id}')

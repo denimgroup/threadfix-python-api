@@ -22,3 +22,29 @@ class ScansAPI(API):
         :param debug: Prints requests and responses, useful for debugging.
         """
         super().__init__(host, api_key, verify_ssl, timeout, headers, user_agent, cert, debug)
+
+
+    def fetch_all_scans(self, page=1, limit=50, href=None, scan_status_enum=None, scan_date=None):
+        """
+        Fetches all scans one page at a time of limit 
+        :param page: The page of the scans to get (optional if you have href)
+        :param limit: The amount of scans per page
+        :param href: The link to the next page in the system from a previous call
+        """
+        params = {}
+        if scan_status_enum:
+            params['scanStatusEnum'] = scan_status_enum
+        if scan_date:
+            params['scanDate'] = scan_date
+        # If href (calling another page gives an href tag for next page in line)
+        if href:
+            return super().request('GET', '/api/network' + href, params=params)
+        # First call
+        return super().request('GET', f'/api/network/scans?_page={page}&_limit={limit}', params=params)
+
+    def find_scan_by_id(self, scan_id):
+        """
+        Gets a scan by its id
+        :param scan_id: ID of the scan to get
+        """
+        return super().request('GET', f'/api/network/scans/{scan_id}')

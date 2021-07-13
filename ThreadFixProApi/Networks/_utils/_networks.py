@@ -87,4 +87,4 @@ class NetworksAPI(API):
         Deletes a network by its id
         :param network_id: ID of the network to delete
         """
-        return super().request('DELETE', f'https://localhost/api/network/networks/{network_id}')
+        return super().request('DELETE', f'/api/network/networks/{network_id}')
