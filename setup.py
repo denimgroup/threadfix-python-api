@@ -21,7 +21,7 @@ if sys.argv[-1] == 'install':
     os.system('python setup.py sdist --formats=zip')
     sys.exit(0)
 
-version = '1.0.11'
+version = '1.0.12'
 
 setup(
     name='ThreadFixProAPI',

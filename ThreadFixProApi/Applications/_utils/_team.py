@@ -11,7 +11,7 @@ from ...API import API
 
 class TeamsAPI(API):
 
-    def __init__(self, host, api_key, verify_ssl, timeout, user_agent, cert, debug):
+    def __init__(self, host, api_key, verify_ssl, timeout, headers, user_agent, cert, debug):
         """
         Initialize a ThreadFix Pro Teams API instance.
         :param host: The URL for the ThreadFix Pro server. (e.g., http://localhost:8080/threadfix/) NOTE: must include http:// TODO: make it so that it is required or implicitly added if forgotten
@@ -23,7 +23,7 @@ class TeamsAPI(API):
         the private key and the certificate) or as a tuple of both file’s path
         :param debug: Prints requests and responses, useful for debugging.
         """
-        super().__init__(host, api_key, verify_ssl, timeout, user_agent, cert, debug)
+        super().__init__(host, api_key, verify_ssl, timeout, headers, user_agent, cert, debug)
 
     def create_team(self, name):
         """

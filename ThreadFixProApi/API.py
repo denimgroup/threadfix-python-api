@@ -15,7 +15,7 @@ from .ThreadFixProResponse import ThreadFixProResponse
 class API(object):
     """Parent class to all APIs in the library. Use this if you have to make a request not already handled by the wrapper."""
 
-    def __init__(self, host, api_key, verify_ssl, timeout, user_agent, cert, debug):
+    def __init__(self, host, api_key, verify_ssl, timeout, headers, user_agent, cert, debug):
         """
         Initialize a ThreadFix Pro API instance.
         :param host: The URL for the ThreadFix Pro server. (e.g., http://localhost:8080/threadfix/) NOTE: must include http://
@@ -48,6 +48,15 @@ class API(object):
             self.host = 'http://' + self.host # Add only http as safe bet
         if str(self.host).endswith('/'): # Ensure it doesn't end with with a slash
             self.host = self.host[:-1]
+
+        # Setup setters so that they can be modified outside of body for network API.
+        if not headers:
+            self.headers = {
+                'Accept': 'application/json',
+                'Authorization': 'APIKEY ' + self.api_key
+            }
+        else:
+            self.headers = headers
        
     def add_versioning(self):
         # Combine host with start of all versioned calls (application only atm) to make sure they are called in the most recent version
@@ -58,17 +67,14 @@ class API(object):
         if not params:
             params = {}
 
-        headers = {
-            'Accept': 'application/json',
-            'Authorization': 'APIKEY ' + self.api_key
-        }
+        
 
         try:
             if self.debug:
                 print(method + ' ' + self.host + url)
                 print(params)
 
-            response = requests.request(method=method, url=self.host + url, params=params, files=files, headers=headers,
+            response = requests.request(method=method, url=self.host + url, params=params, files=files, headers=self.headers,
                                         timeout=self.timeout, verify=self.verify_ssl, cert=self.cert)
 
             if self.debug:
@@ -77,11 +83,19 @@ class API(object):
 
             try:
                 json_response = response.json()
-
-                message = json_response['message']
-                success = json_response['success']
-                response_code = json_response['responseCode']
-                data = json_response['object']
+                try:
+                    message = json_response['message']
+                except KeyError:
+                    message = 'Could not decode message from response'
+                try:
+                    response_code = json_response['responseCode']
+                except KeyError:
+                    response_code= response.status_code
+                success = True if response_code >= 200 and response_code < 210 else False
+                try:
+                    data = json_response['object']
+                except KeyError:
+                    data = json_response
 
                 return ThreadFixProResponse(message=message, success=success, response_code=response_code, data=data)
             except ValueError:
