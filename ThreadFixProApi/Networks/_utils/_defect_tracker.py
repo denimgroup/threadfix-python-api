@@ -1,5 +1,10 @@
-from ...API import API
+__author__ = "Evan Schlesinger"
+__copyright__ = "(C) 2021 Coalfire"
+__contributors__ = ["Evan Schlesinger"]
+__status__ = "Production"
+__license__ = "MIT"
 
+from ...API import API
 
 class DefectTrackerAPI(API):
 

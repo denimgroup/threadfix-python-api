@@ -19,7 +19,7 @@ def network_requests_test(threadfix, apikey):
 def network_test(threadfix, apikey):
     # Connect
     network_api = ThreadFixProAPINetworks(threadfix, apikey, verify_ssl=False)
-    ret = network_api.request('GET', '/api/network/vulnerabilities')
+    ret = network_api.VulnerabilitiesAPI.fetch_all_vulnerabilities()
     print(ret.data)
 
 network_test('https://demo.tfint.link', 'cKj2ZmbZkZoXMML5KwAlkwHN9CQDYU38ch9fBFUYPF0')
