@@ -143,4 +143,4 @@ class SearchAPI(API):
         params  = { 'isArchived' : is_archived }
         if href:
             super().request('GET', f'/api/search/network/{network_id}' + href, params=params)
-        return super().request('GET', f'/api/search/network/{network_id}/networks?_page={page}&_limit={limit}', params=params)
+        return super().request('GET', f'/api/search/network/{network_id}/assets?_page={page}&_limit={limit}', params=params)
