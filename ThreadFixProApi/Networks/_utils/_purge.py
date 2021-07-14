@@ -22,3 +22,33 @@ class PurgeAPI(API):
         :param debug: Prints requests and responses, useful for debugging.
         """
         super().__init__(host, api_key, verify_ssl, timeout, headers, user_agent, cert, debug)
+
+    def queue_scan_for_purge(self, scan_id):
+        """
+        Queues a scan to be purged
+        :param scan_id: ID of scan to be purged
+        """
+        return super().request('DELETE', f'/api/purge/scans/{scan_id}')
+
+    def queue_scans_for_purge(self, scan_ids):
+        """
+        Queues a set of scans to be purged
+        :param scan_ids: IDs of scans to be purged
+        """
+        params = { 'resources' : scan_ids }
+        return super().request('DELETE', f'/api/purge/scans', params=params)
+
+    def queue_asset_for_purge(self, asset_id):
+        """
+        Queues an asset to be purged
+        :param asset_id: ID of asset to be purged
+        """
+        return super().request('DELETE', f'/api/purge/assets/{asset_id}')
+
+    def queue_assets_for_purge(self, asset_ids):
+        """
+        Queues a set of assets to be purged
+        :param asset_ids: IDs of assets to be purged
+        """
+        params = { 'resources' : asset_ids }
+        return super().request('DELETE', f'/api/purge/assets', params=params)
