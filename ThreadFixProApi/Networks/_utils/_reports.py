@@ -22,3 +22,45 @@ class ReportsAPI(API):
         :param debug: Prints requests and responses, useful for debugging.
         """
         super().__init__(host, api_key, verify_ssl, timeout, headers, user_agent, cert, debug)
+
+    def get_most_vulnerable_networks(self):
+        """
+        Gets the most vulnerable networks
+        """
+        return super().request('GET', '/api/report/most-vulnerable-networks')
+
+    def get_most_vulnerable_hosts(self):
+        """
+        Gets the most vulnerable hosts
+        """
+        return super().request('GET', '/api/report/most-vulnerable-hosts')
+
+    def get_average_time_to_remediate_report(self):
+        """
+        Gets the average remediation time.
+        """
+        return super().request('GET', '/api/report/average-remediation-time')
+
+    def get_most_prevalent_cves_report(self):
+        """
+        Gets a report of the most common CVEs in ThreadFix
+        """
+        return super().request('GET', '/api/report/most-prevalent-cves')
+
+    def get_operating_system_report(self):
+        """
+        Gets the list of operating systems and their information
+        """
+        return super().request('GET', '/api/report/operating-systems')
+
+    def get_vulnerability_activity_report(self):
+        """
+        Shows the activity report for each vulnerability
+        """
+        return super().request('GET', '/api/report/vulnerability-activity-report')
+
+    def get_trending_vulnerability_report(self):
+        """
+        Shows trending vulnerabilities.
+        """
+        return super().request('GET', '/api/report/trending-vulnerabilities')
