@@ -22,3 +22,21 @@ class BatchAPI(API):
         :param debug: Prints requests and responses, useful for debugging.
         """
         super().__init__(host, api_key, verify_ssl, timeout, headers, user_agent, cert, debug)
+
+    def bulk_update_vulnerability_status(self, status, vuln_ids):
+        """
+        Updates a group of vulnerabilities at once to a new status
+        :param status: Vulnerability status to update to
+        :param vuln_ids: Vulnerabilities to update
+        """
+        params = { 'resources' : vuln_ids}
+        return super().request('PUT', f'/api/batch/vulnerabilities/status/{status}', params=params)
+
+    def bulk_update_vulnerability_severity(self, severity, vuln_ids):
+        """
+        Updates a group of vulnerabilities at once to a new severity
+        :param severity: Vulnerability severity to update to
+        :param vuln_ids: Vulnerabilities to update
+        """
+        params = { 'resources' : vuln_ids}
+        return super().request('PUT', f'/api/batch/vulnerabilities/severity/{severity}', params=params)
