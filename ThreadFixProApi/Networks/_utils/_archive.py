@@ -22,3 +22,33 @@ class ArchiveAPI(API):
         :param debug: Prints requests and responses, useful for debugging.
         """
         super().__init__(host, api_key, verify_ssl, timeout, headers, user_agent, cert, debug)
+
+    def archive_asset(self, asset_id):
+        """
+        Archives a specific asset
+        :param asset_id: ID of asset to archive
+        """
+        return super().request('PUT', f'/api/archive/assets/{asset_id}')
+
+    def archive_asset(self, asset_ids):
+        """
+        Archives a set of assets
+        :param asset_ids: IDs of assets to archive
+        """
+        params = { 'resources' : asset_ids }
+        return super().request('PUT', f'/api/archive/assets', params=params)
+
+    def archive_asset(self, asset_id):
+        """
+        Unarchives a specific asset
+        :param asset_id: ID of asset to unarchive
+        """
+        return super().request('PUT', f'/api/unarchive/assets/{asset_id}')
+
+    def archive_asset(self, asset_ids):
+        """
+        Unarchives a set of assets
+        :param asset_ids: IDs of assets to unarchive
+        """
+        params = { 'resources' : asset_ids }
+        return super().request('PUT', f'/api/unarchive/assets', params=params)
