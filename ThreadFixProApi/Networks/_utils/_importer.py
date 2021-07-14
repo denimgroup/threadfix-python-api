@@ -22,3 +22,24 @@ class ImporterAPI(API):
         :param debug: Prints requests and responses, useful for debugging.
         """
         super().__init__(host, api_key, verify_ssl, timeout, headers, user_agent, cert, debug)
+
+    def queue_scan_upload(self, file_path):
+        """
+        Queues a scan for upload
+        :param file_path: Path to the scan file to be uploaded.
+        """
+        return super().request('POST', '/api/importer', files={'file': open(file_path, 'rb')})
+
+    def import_latest_scan_for_remote_provider(self, provider_id):
+        """
+        Imports the latest scan into the remote provider specified
+        :param provider_id: ID of remote provider to import the scan to.
+        """
+        return super().request('POST', f'/api/importer/remoteprovider/{provider_id}/importLatest')
+
+    def request_latest_scan_or_ececute_scan_for_provider(self, provider_id):
+        """
+        Gets the latests scan or executes it for the provider
+        :param provider_id: ID of remote provider to import the scan to.
+        """
+        return super().request('POST', f'/api/importer/remoteprovider/{provider_id}/requestScan')
