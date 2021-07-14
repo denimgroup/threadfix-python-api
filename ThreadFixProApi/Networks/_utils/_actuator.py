@@ -22,3 +22,10 @@ class ActuatorAPI(API):
         :param debug: Prints requests and responses, useful for debugging.
         """
         super().__init__(host, api_key, verify_ssl, timeout, headers, user_agent, cert, debug)
+
+    def get_version_info(self, page):
+        """
+        Gets version of Threadfix page
+        :param page: page to get version of.
+        """
+        return super().request('GET', f'/actuator/{page}')
