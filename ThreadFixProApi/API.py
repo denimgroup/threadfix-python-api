@@ -73,6 +73,7 @@ class API(object):
             if self.debug:
                 print(method + ' ' + self.host + url)
                 print(params)
+                print(self.headers)
 
             response = requests.request(method=method, url=self.host + url, params=params, files=files, headers=self.headers,
                                         timeout=self.timeout, verify=self.verify_ssl, cert=self.cert)
@@ -90,7 +91,7 @@ class API(object):
                 try:
                     response_code = json_response['responseCode']
                 except KeyError:
-                    response_code= response.status_code
+                    response_code = response.status_code
                 success = True if response_code >= 200 and response_code < 210 else False
                 try:
                     data = json_response['object']

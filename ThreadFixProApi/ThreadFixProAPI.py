@@ -30,5 +30,5 @@ class ThreadFixProAPI(API):
         """
         super().__init__(host, api_key, verify_ssl, timeout, headers, user_agent, cert, debug)
         # Add on threadfix to application calls to make sure it can still work in a unified system as application endpoints are on /threadfix/{endpoint}
-        self.Applications = ThreadFixProAPIApplications(self.host + '/threadfix', api_key, verify_ssl, timeout, self.headers, self.user_agent, cert, debug)
-        self.Networks = ThreadFixProAPINetworks(self.host, api_key, verify_ssl, timeout, self.headers, self.user_agent, cert, debug)
+        self.Applications = ThreadFixProAPIApplications(self.host + '/threadfix', api_key, verify_ssl, timeout, headers, user_agent, cert, debug)
+        self.Networks = ThreadFixProAPINetworks(self.host, api_key, verify_ssl, timeout, headers, user_agent, cert, debug)

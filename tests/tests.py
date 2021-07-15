@@ -21,6 +21,8 @@ def network_test(threadfix, apikey):
     network_api = ThreadFixProAPINetworks(threadfix, apikey, verify_ssl=False)
     ret = network_api.VulnerabilitiesAPI.fetch_all_vulnerabilities()
     print(ret.data)
+    ret2 = network_api.VulnerabilitiesAPI.fetch_all_vulnerabilities(href=ret.data['_links']['next']['href'])
+    print(ret2.data)
 
 network_test('https://demo.tfint.link', 'cKj2ZmbZkZoXMML5KwAlkwHN9CQDYU38ch9fBFUYPF0')
 
