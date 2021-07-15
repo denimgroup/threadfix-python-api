@@ -7,6 +7,7 @@ __contributors__ = ["Evan Schlesinger"]
 __status__ = "Production"
 __license__ = "MIT"
 
+import json
 import requests
 import urllib3
 
@@ -92,7 +93,10 @@ class API(object):
                     response_code = json_response['responseCode']
                 except KeyError:
                     response_code = response.status_code
-                success = True if response_code >= 200 and response_code < 210 else False
+                try:
+                    success = json_response['success']
+                except KeyError:
+                    success = True if response_code >= 200 and response_code < 210 else False
                 try:
                     data = json_response['object']
                 except KeyError:
