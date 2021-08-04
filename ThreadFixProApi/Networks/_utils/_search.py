@@ -55,10 +55,11 @@ class SearchAPI(API):
             return super().request('GET', '/api/search/assets/ipAddresses/vulnerabilities' + href)
         return super().request('GET', f'/api/search/assets/ipAddresses/vulnerabilities/counts?_page={page}&_limit={limit}', params=params)
 
-    def get_asset_vulnerability_details(self, page=1, limit=50, href=None, severity=None, status=None, first_found_date=None, last_seen_date=None, ip_address=None, 
+    def get_asset_vulnerability_details(self, asset_id, page=1, limit=50, href=None, severity=None, status=None, first_found_date=None, last_seen_date=None, ip_address=None, 
                                         include_stats=False, port=None, cve=None, cvss=None):
         """
         Get all the details from a vulnerability
+        :param asset_id: ID of asset to get vulnerability information from
         :param page: Page of results to get
         :param limit: Number of results per page
         :param href: The link to the next page in the system from a previous call
@@ -89,8 +90,8 @@ class SearchAPI(API):
         if cvss:
             params['cvss'] = cvss
         if href:
-            return super().request('GET', '/api/search/assets/ipAddresses/vulnerabilities' + href)
-        return super().request('GET', f'/api/search/assets/ipAddresses/vulnerabilities/counts?_page={page}&_limit={limit}', params=params)
+            return super().request('GET', f'/api/search/assets/{asset_id}/vulnerabilities' + href)
+        return super().request('GET', f'/api/search/assets/{asset_id}/vulnerabilities/details?_page={page}&_limit={limit}', params=params)
 
     def get_asset_vulnerability_details_using_ip(self, page=1, limit=50, href=None, severity=None, status=None, first_found_date=None, last_seen_date=None, ip_address=None, include_stats=False):
         """
