@@ -13,6 +13,8 @@ import urllib3
 import requests.exceptions
 import requests.packages.urllib3
 
+import warnings
+
 from _utils import *
 
 class ThreadFixProAPI(object):
@@ -30,6 +32,8 @@ class ThreadFixProAPI(object):
         the private key and the certificate) or as a tuple of both file’s path
         :param debug: Prints requests and responses, useful for debugging.
         """
+        # Deprecation warning
+        warnings.warn('ThreadFixProAPI object is being changed to contain only links to ApplicationSec and NetworkSec APIs. This object as it is currently presented is being changed to ThreadFixProAPIApplications or ThreadFixProAPI.Applications', DeprecationWarning)
         self.TeamsAPI = TeamsAPI(host, api_key, verify_ssl, timeout, user_agent, cert, debug)
         self.ApplicationsAPI = ApplicationsAPI(host, api_key, verify_ssl, timeout, user_agent, cert, debug)
         self.DefectTrackersAPI = DefectTrackersAPI(host, api_key, verify_ssl, timeout, user_agent, cert, debug)

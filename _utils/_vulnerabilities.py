@@ -312,6 +312,7 @@ class VulnerabilitiesAPI(object):
         Change the specified vulnerability to exploitable
         :param vulnerability_id: Vulnerability identifer
         """
+        warnings.warn('This function has been deprecated in ThreadFix 2.8.2', DeprecationWarning)
         return self._request('POST', 'rest/vulnerabilities/' + str(vulnerability_id) + '/setExploitable')
 
     def mark_vulnerability_as_contested(self, vulnerability_id):

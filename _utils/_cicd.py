@@ -7,6 +7,7 @@ __contributors__ = ["Evan Schlesinger"]
 __status__ = "Production"
 __license__ = "MIT"
 
+import warnings
 import requests
 import urllib3
 import requests.exceptions
@@ -52,6 +53,7 @@ class CICDAPI(object):
         :param max_allowed: The maximum number of vulnerabilities allowed for the Pass Criteria.  If no value is specified there is no limit.
         :param max_introduced: The maximum number of new vulnerabilities in a scan for the Pass Criteria.  If no value is specified there is no limit.
         """
+        warnings.warn('This function has been deprecated in ThreadFix 2.8', DeprecationWarning)
         params = {'severity' : severity}
         if max_allowed:
             params['maxAllowed'] = max_allowed
@@ -67,6 +69,7 @@ class CICDAPI(object):
         :param max_allowed: The maximum number of vulnerabilities allowed for the Pass Criteria.  If no value is specified there is no limit.
         :param max_introduced: The maximum number of new vulnerabilities in a scan for the Pass Criteria.  If no value is specified there is no limit.
         """
+        warnings.warn('This function has been deprecated in ThreadFix 2.8', DeprecationWarning)
         params = {'severity' : severity}
         if max_allowed:
             params['maxAllowed'] = max_allowed
@@ -78,6 +81,7 @@ class CICDAPI(object):
         """
         Lists CI/CD pass criteria
         """
+        warnings.warn('This function has been deprecated in ThreadFix 2.8', DeprecationWarning)
         return self._request('GET', 'rest/cicd/passCriteria')
 
     def get_cicd_pass_criteria_details(self, cicd_id):
@@ -85,6 +89,7 @@ class CICDAPI(object):
         Returns detailed information about the specified CI/CD pass criteria
         :param cicd_id: CI/CD identifier
         """
+        warnings.warn('This function has been deprecated in ThreadFix 2.8', DeprecationWarning)
         return self._request('GET', 'rest/cicd/passCriteria/' + str(cicd_id) + '/detail')
 
     def delete_cicd_pass_criteria(self, cicd_id):
@@ -92,6 +97,7 @@ class CICDAPI(object):
         Deletes the specified CI/CD pass criteria
         :param cicd_id: CI/CD identifier
         """
+        warnings.warn('This function has been deprecated in ThreadFix 2.8', DeprecationWarning)
         return self._request('DELETE', 'rest/cicd/passCriteria/' + str(cicd_id) + '/delete')
 
     def add_application_to_cicd_pass_criteria(self, pass_criteria_id, application_id):
@@ -100,6 +106,7 @@ class CICDAPI(object):
         :param pass_criteria_id: Pass Criteria identifier
         :param application_id: Application identifier
         """
+        warnings.warn('This function has been deprecated in ThreadFix 2.8', DeprecationWarning)
         return self._request('PUT', 'rest/cicd/passCriteria/' + str(pass_criteria_id) + '/addApplication/' + str(application_id))
 
     def remove_application_from_cicd_pass_criteria(self, pass_criteria_id, application_id):
@@ -108,6 +115,7 @@ class CICDAPI(object):
         :param pass_criteria_id: Pass Criteria identifier
         :param application_id: Application identifier
         """
+        warnings.warn('This function has been deprecated in ThreadFix 2.8', DeprecationWarning)
         return self._request('DELETE', 'rest/cicd/passCriteria/' + str(pass_criteria_id) + '/removeApplication/' + str(application_id))
 
     def evaluate_cicd_pass_criteria(self, application_id, from_date=None, to_date=None):
