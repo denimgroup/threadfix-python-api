@@ -29,8 +29,8 @@ class BatchAPI(API):
         :param status: Vulnerability status to update to
         :param vuln_ids: Vulnerabilities to update
         """
-        params = { 'resources' : vuln_ids}
-        return super().request('PUT', f'/api/batch/vulnerabilities/status/{status}', params=params)
+        json = { 'resources' : vuln_ids}
+        return super().request('PUT', f'/api/batch/vulnerabilities/status/{status}', json=json)
 
     def bulk_update_vulnerability_severity(self, severity, vuln_ids):
         """
@@ -38,5 +38,5 @@ class BatchAPI(API):
         :param severity: Vulnerability severity to update to
         :param vuln_ids: Vulnerabilities to update
         """
-        params = { 'resources' : vuln_ids}
-        return super().request('PUT', f'/api/batch/vulnerabilities/severity/{severity}', params=params)
+        json = { 'resources' : vuln_ids}
+        return super().request('PUT', f'/api/batch/vulnerabilities/severity/{severity}', json=json)

@@ -63,12 +63,10 @@ class API(object):
         # Combine host with start of all versioned calls (application only atm) to make sure they are called in the most recent version
         self.host = self.host + '/rest/v' + self.api_version
 
-    def request(self, method, url, params=None, files=None):
+    def request(self, method, url, params=None, files=None, json=None):
         """Common handler for all HTTP requests."""
         if not params:
             params = {}
-
-        
 
         try:
             if self.debug:
@@ -76,7 +74,7 @@ class API(object):
                 print(params)
                 print(self.headers)
 
-            response = requests.request(method=method, url=self.host + url, params=params, files=files, headers=self.headers,
+            response = requests.request(method=method, url=self.host + url, params=params, files=files, json=json, headers=self.headers,
                                         timeout=self.timeout, verify=self.verify_ssl, cert=self.cert)
 
             if self.debug:

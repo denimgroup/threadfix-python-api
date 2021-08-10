@@ -105,7 +105,7 @@ class SearchAPI(API):
         :param ip_address: IP addresses to filter vulnerabilities with
         :param include_stats: Whether or not to return the severity counts of vulnerabilities
         """
-        params = { 'includeStats' : include_stats }
+        params = { 'includeStats' : include_stats}
         if severity:
             params['severity'] = severity
         if status:
